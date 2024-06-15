@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase Auth Example - Artist</title>
+    <style>
+      body {
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        position: relative;
+      }
+
+      .logo {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+      }
+
+      .logo img {
+        max-width: 100px;
+      }
+
+      .artist-details {
+        background-color: #333;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 600px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .artist-details img {
+        max-width: 200px;
+        border-radius: 10px;
+        margin-right: 20px;
+      }
+
+      .artist-info {
+        flex: 1;
+      }
+
+      h3,
+      p {
+        margin: 10px 0;
+      }
+    </style>
+    <script type="module">
+      // Import Firebase
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCxzc83eu_m2ZOk2dmAjiCEi7gezERfBVo",
+        authDomain: "spotfire-743333.firebaseapp.com",
+        projectId: "spotfire-743333",
+        storageBucket: "spotfire-743333.appspot.com",
+        messagingSenderId: "915711055411",
+        appId: "1:915711055411:web:f0439cc99176897c443546",
+        measurementId: "G-YKB6RCRDGH",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      async function displayArtistDetails(artistId) {
+        console.log("Fetching artist document with ID:", artistId);
+        const artistDoc = await getDoc(doc(db, "artists", artistId));
+
+        if (!artistDoc.exists()) {
+          document.querySelector(".content").innerHTML =
+            "<p>Artist not found.</p>";
+          console.log("Artist not found for ID:", artistId);
+          return;
+        }
+
+        const artistData = artistDoc.data();
+        console.log("Artist data:", artistData);
+
+        const artistDetails = document.createElement("div");
+        artistDetails.className = "artist-details";
+
+        const poster = document.createElement("img");
+        poster.src = artistData.poster_url;
+        poster.alt = artistData.name;
+
+        const artistInfo = document.createElement("div");
+        artistInfo.className = "artist-info";
+
+        const name = document.createElement("h3");
+        name.textContent = `Name: ${artistData.name}`;
+
+        const age = document.createElement("p");
+        age.textContent = `Age: ${artistData.age}`;
+
+        const description = document.createElement("p");
+        description.textContent = `Description: ${artistData.description}`;
+
+        artistInfo.appendChild(name);
+        artistInfo.appendChild(age);
+        artistInfo.appendChild(description);
+
+        artistDetails.appendChild(poster);
+        artistDetails.appendChild(artistInfo);
+
+        document.querySelector(".content").appendChild(artistDetails);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const artistId = urlParams.get("id");
+        if (artistId) {
+          displayArtistDetails(artistId);
+        } else {
+          document.querySelector(".content").innerHTML =
+            "<p>Artist ID not provided.</p>";
+          console.log("Artist ID not provided in URL.");
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div class="logo">
+      <img src="logo.png" alt="Logo" />
+    </div>
+    <div class="content">
+      <h3>About Artist</h1>
+    </div>
+  </body>
+</html>

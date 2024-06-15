@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase Auth - Home</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        display: flex;
+        justify-content: space-between;
+        width: 90%;
+        max-width: 1200px;
+        margin-top: 60px;
+        padding: 20px;
+      }
+
+      .music-container {
+        width: 100%;
+        transition: width 0.3s;
+      }
+
+      .music-details-container {
+        width: 0;
+        display: none;
+        background: #1a1a1a;
+        margin-left: 30px;
+        margin-right: -20px;
+        padding: 20px;
+        border-radius: 10px;
+        transition: width 0.3s, display 0.3s;
+      }
+
+      .logo {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+      }
+
+      .logo img {
+        max-width: 100px;
+      }
+
+      h2 {
+        margin: 0 0 20px 0;
+        padding: 0;
+      }
+
+      .music-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
+      }
+
+      .music-item {
+        background: #1a1a1a;
+        padding: 10px;
+        border-radius: 10px;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .music-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .music-item img {
+        max-width: 100%;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .music-item h3 {
+        margin: 10px 0 5px;
+        font-size: 1em;
+      }
+
+      .clickable {
+        color: #1db954;
+        cursor: pointer;
+        margin: 0;
+      }
+
+      .clickable:hover {
+        text-decoration: underline;
+      }
+
+      .music-details {
+        text-align: center;
+        position: relative;
+      }
+
+      .music-details img {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #3a3a3a;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      audio {
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .artist-details {
+        background-color: #333;
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        margin-top: 20px;
+      }
+
+      .artist-details img {
+        max-width: 100px;
+        border-radius: 10px;
+        margin-right: 20px;
+      }
+
+      .artist-info {
+        flex: 1;
+      }
+
+      .artist-info h3,
+      .artist-info p {
+        margin: 5px 0;
+      }
+    </style>
+    <script type="module">
+      // Import Firebase
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        doc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCxzc83eu_m2ZOk2dmAjiCEi7gezERfBVo",
+        authDomain: "spotfire-743333.firebaseapp.com",
+        projectId: "spotfire-743333",
+        storageBucket: "spotfire-743333.appspot.com",
+        messagingSenderId: "915711055411",
+        appId: "1:915711055411:web:f0439cc99176897c443546",
+        measurementId: "G-YKB6RCRDGH",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      async function displayMusicCollection() {
+        try {
+          const musicCollection = collection(db, "Music");
+          const musicSnapshot = await getDocs(musicCollection);
+
+          if (musicSnapshot.empty) {
+            console.log("No music found in the collection.");
+            document.querySelector(".music-container").innerHTML =
+              "<p>No music found in the collection.</p>";
+            return;
+          }
+
+          const musicList = [];
+          for (const musicDoc of musicSnapshot.docs) {
+            try {
+              const musicData = musicDoc.data();
+              musicData.id = musicDoc.id; // Add the document ID to the music data
+              const artistDoc = await getDoc(
+                doc(db, "artists", musicData.artist_id)
+              );
+
+              if (artistDoc.exists()) {
+                musicData.artist_name = artistDoc.data().name;
+              } else {
+                musicData.artist_name = "Unknown Artist";
+              }
+
+              musicList.push(musicData);
+            } catch (itemError) {
+              console.error(
+                `Error fetching data for item ${musicDoc.id}:`,
+                itemError
+              );
+            }
+          }
+
+          if (musicList.length === 0) {
+            document.querySelector(".music-container").innerHTML =
+              "<p>No valid music items found in the collection.</p>";
+            return;
+          }
+
+          const musicGrid = document.createElement("div");
+          musicGrid.className = "music-grid";
+
+          musicList.forEach((music) => {
+            const musicItem = document.createElement("div");
+            musicItem.className = "music-item";
+
+            const img = document.createElement("img");
+            img.src = music.poster_url;
+            img.alt = music.title;
+
+            img.addEventListener("click", () => {
+              displayMusicDetails(music.id, music.artist_id);
+            });
+
+            const title = document.createElement("h3");
+            title.textContent = music.title;
+
+            const artistName = document.createElement("p");
+            artistName.className = "clickable";
+            artistName.textContent = `${music.artist_name}`;
+            artistName.addEventListener("click", (e) => {
+              e.stopPropagation(); // Prevent the click event from triggering the image click event
+              window.location.href = `artist.html?id=${music.artist_id}`;
+            });
+
+            musicItem.appendChild(img);
+            musicItem.appendChild(title);
+            musicItem.appendChild(artistName);
+
+            musicGrid.appendChild(musicItem);
+          });
+
+          const container = document.querySelector(".music-container");
+          container.appendChild(musicGrid);
+        } catch (error) {
+          console.error("Error fetching music collection:", error);
+          document.querySelector(".music-container").innerHTML =
+            "<p>Error fetching music collection. Check console for details.</p>";
+        }
+      }
+
+      async function displayMusicDetails(musicId, artistId) {
+        try {
+          const musicDoc = await getDoc(doc(db, "Music", musicId));
+          const artistDoc = await getDoc(doc(db, "artists", artistId));
+
+          if (!musicDoc.exists()) {
+            document.querySelector(".music-details-container").innerHTML =
+              "<p>Music not found.</p>";
+            return;
+          }
+
+          const music = musicDoc.data();
+          const musicDetails = document.querySelector(
+            ".music-details-container"
+          );
+          musicDetails.innerHTML = "";
+
+          const musicDetailsDiv = document.createElement("div");
+          musicDetailsDiv.className = "music-details";
+
+          const closeButton = document.createElement("button");
+          closeButton.className = "close-btn";
+          closeButton.textContent = "X";
+          closeButton.addEventListener("click", () => {
+            const audioPlayer = musicDetails.querySelector("audio");
+            if (audioPlayer) {
+              audioPlayer.pause();
+              audioPlayer.currentTime = 0;
+            }
+            musicDetails.style.display = "none";
+            document.querySelector(".music-container").style.width = "100%";
+            document.querySelector(".music-details-container").style.width =
+              "0";
+          });
+
+          const img = document.createElement("img");
+          img.src = music.poster_url;
+          img.alt = music.title;
+
+          const title = document.createElement("h3");
+          title.textContent = music.title;
+
+          const artistNameElement = document.createElement("p");
+          artistNameElement.className = "clickable";
+          artistNameElement.textContent = `${music.artist_name}`;
+          artistNameElement.style.marginTop = "10px";
+          artistNameElement.addEventListener("click", () => {
+            window.location.href = `artist.html?id=${music.artist_id}`;
+          });
+
+          const audio = document.createElement("audio");
+          audio.src = music.mp3_url;
+          audio.controls = true;
+          audio.autoplay = true;
+
+          musicDetailsDiv.appendChild(closeButton);
+          musicDetailsDiv.appendChild(img);
+          musicDetailsDiv.appendChild(title);
+          musicDetailsDiv.appendChild(artistNameElement);
+          musicDetailsDiv.appendChild(audio);
+
+          musicDetails.appendChild(musicDetailsDiv);
+
+          if (artistDoc.exists()) {
+            const artist = artistDoc.data();
+            const artistDetails = document.createElement("div");
+            artistDetails.className = "artist-details";
+
+            const artistImg = document.createElement("img");
+            artistImg.src = artist.poster_url;
+            artistImg.alt = artist.name;
+
+            const artistInfo = document.createElement("div");
+            artistInfo.className = "artist-info";
+
+            const artistName = document.createElement("h3");
+            artistName.textContent = `Name: ${artist.name}`;
+
+            const artistAge = document.createElement("p");
+            artistAge.textContent = `Age: ${artist.age}`;
+
+            const artistDescription = document.createElement("p");
+            artistDescription.textContent = `Description: ${artist.description}`;
+
+            artistInfo.appendChild(artistName);
+            artistInfo.appendChild(artistAge);
+            artistInfo.appendChild(artistDescription);
+
+            artistDetails.appendChild(artistImg);
+            artistDetails.appendChild(artistInfo);
+
+            musicDetails.appendChild(artistDetails);
+          } else {
+            musicDetails.innerHTML += "<p>Artist not found.</p>";
+          }
+
+          musicDetails.style.display = "block";
+          document.querySelector(".music-container").style.width = "70%";
+          document.querySelector(".music-details-container").style.width =
+            "30%";
+        } catch (error) {
+          console.error("Error fetching music or artist details:", error);
+          document.querySelector(".music-details-container").innerHTML =
+            "<p>Error fetching details. Check console for details.</p>";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        displayMusicCollection();
+      });
+    </script>
+  </head>
+  <body>
+    <div class="logo">
+      <img src="logo.png" alt="Logo" />
+    </div>
+    <div class="container">
+      <div class="music-container">
+        <h3>All music</h3>
+      </div>
+      <div class="music-details-container">
+        <!-- Music and artist details will be loaded here -->
+      </div>
+    </div>
+  </body>
+</html>

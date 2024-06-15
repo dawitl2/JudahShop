@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase Auth Example - Login</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: black;
+      }
+
+      .logo {
+        position: absolute;
+        top: 140px;
+        left: 545px;
+        transition: top 0.3s;
+      }
+
+      .logo.up {
+        top: 95px;
+      }
+
+      .logo img {
+        max-width: 130px;
+      }
+
+      .login_tf {
+        background: rgb(8, 8, 8);
+        padding: 16px;
+        border-radius: 5px;
+        width: 237px;
+        height: 2px;
+        border: 1px solid transparent;
+        color: rgb(255, 255, 255);
+      }
+
+      .login_tf::placeholder {
+        font-size: 0.9em; /* Smaller placeholder text */
+      }
+
+      .login_tf:focus {
+        border: 1px solid rgb(33, 101, 25);
+        outline: none;
+      }
+
+      .container {
+        background: rgb(30, 30, 30);
+        padding: 18px; /* Slightly reduced padding */
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 270px;
+        opacity: 0.7;
+      }
+
+      .text {
+        color: rgb(130, 130, 130);
+        font-size: 11px;
+      }
+
+      .text2 {
+        color: rgb(120, 120, 120);
+        font-size: 10px;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        margin: 5px 0; /* Add a small margin-top and margin-bottom */
+        color: white;
+      }
+
+      form {
+        display: none;
+      }
+
+      form.active {
+        display: block;
+      }
+
+      label {
+        display: none;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        margin-top: 9px;
+        border-radius: 5px;
+        background-color: black;
+        color: white;
+        border: 1px solid transparent;
+      }
+
+      input:focus {
+        border: 1px solid white;
+        outline: none;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #1dcd5c;
+        border: none;
+        color: rgb(0, 0, 0);
+        border-radius: 4px;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+
+      .toggle-link {
+        text-align: center;
+        margin-top: 10px;
+        display: block;
+      }
+
+      .toggle-link a,
+      .forgot-password a {
+        color: #1dcd5c;
+        text-decoration: none;
+      }
+
+      .toggle-link a:hover,
+      .forgot-password a:hover {
+        text-decoration: underline;
+      }
+
+      .forgot-password {
+        text-align: left;
+        margin-top: -2px;
+        margin-left: 5px;
+        margin-bottom: 12px; /* Increased margin-bottom */
+        font-size: 9px;
+      }
+    </style>
+    <script type="module">
+      // Import Firebase
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCxzc83eu_m2ZOk2dmAjiCEi7gezERfBVo",
+        authDomain: "spotfire-743333.firebaseapp.com",
+        projectId: "spotfire-743333",
+        storageBucket: "spotfire-743333.appspot.com",
+        messagingSenderId: "915711055411",
+        appId: "1:915711055411:web:f0439cc99176897c443546",
+        measurementId: "G-YKB6RCRDGH",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth();
+      const db = getFirestore(app);
+
+      async function signUp(name, username, email, password) {
+        try {
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          const user = userCredential.user;
+
+          // Store user info in Firestore
+          await setDoc(doc(db, "users", user.uid), {
+            name: name,
+            username: username,
+            email: email,
+            password: password,
+          });
+
+          await setDoc(doc(db, "usernames", username), {
+            email: email,
+          });
+
+          alert("User registered successfully!");
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      async function login(username, password) {
+        try {
+          // Find the user's email by username
+          const usernameDoc = await getDoc(doc(db, "usernames", username));
+          if (!usernameDoc.exists()) {
+            alert("Username not found!");
+            return;
+          }
+          const email = usernameDoc.data().email;
+
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          const user = userCredential.user;
+
+          // Fetch user info from Firestore
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            window.location.href = "home.html";
+          } else {
+            alert("No such user!");
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const signUpForm = document.getElementById("signUpForm");
+        const loginForm = document.getElementById("loginForm");
+        const toggleLinks = document.querySelectorAll(".toggle-link a");
+        const logo = document.querySelector(".logo");
+        const formTitle = document.getElementById("formTitle");
+
+        signUpForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = e.target.name.value;
+          const username = e.target.username.value;
+          const email = e.target.email.value;
+          const password = e.target.password.value;
+          signUp(name, username, email, password);
+        });
+
+        loginForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const username = e.target.username.value;
+          const password = e.target.password.value;
+          login(username, password);
+        });
+
+        toggleLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.getElementById("signUpForm").classList.toggle("active");
+            document.getElementById("loginForm").classList.toggle("active");
+            logo.classList.toggle("up");
+
+            if (
+              document.getElementById("signUpForm").classList.contains("active")
+            ) {
+              formTitle.textContent = "Create an Account";
+            } else {
+              formTitle.textContent = "Welcome back!";
+            }
+          });
+        });
+
+        // Initially show login form
+        loginForm.classList.add("active");
+        formTitle.textContent = "Welcome back!";
+      });
+    </script>
+  </head>
+  <body>
+    <div class="logo">
+      <img src="logo.png" alt="Logo" />
+    </div>
+    <div class="container">
+      <h2 id="formTitle"></h2>
+
+      <form id="loginForm">
+        <input
+          class="login_tf"
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Username"
+          required
+        /><br />
+        <input
+          class="login_tf"
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required
+        /><br />
+        <div class="forgot-password">
+          <a href="#">Forgot Password?</a>
+        </div>
+        <button type="submit">Login</button>
+        <div class="toggle-link">
+          <span class="text2"
+            >Don't have an account? <a href="#">Sign Up</a></span
+          >
+        </div>
+      </form>
+
+      <form id="signUpForm">
+        <input
+          class="login_tf"
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Name"
+          required
+        /><br />
+        <input
+          class="login_tf"
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Username"
+          required
+        /><br />
+        <input
+          class="login_tf"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          required
+        /><br />
+        <input
+          class="login_tf"
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required
+        /><br />
+        <button type="submit">Sign Up</button>
+        <div class="toggle-link">
+          <span class="text2"
+            >Already have an account? <a href="#">Login</a></span
+          >
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
