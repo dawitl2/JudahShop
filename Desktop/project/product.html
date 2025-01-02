@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="product.css">
+</head>
+<body>
+    <header>
+        <div class="top_div">
+            <ul class="top_ul">
+                <li>Home</li>
+                <li>Brands</li>
+                <li>Coupons</li>
+                <li>Asscesorys</li>
+            </ul>
+        </div>
+    </header>
+    <main>
+        
+        <section class="product-overview">
+            <div class="product-images">
+               <img src="images/iphone16_blue.png" alt="iPhone 15 Pro Main Image" class="main-image">
+               <div class="thumbnails">
+                   <img src="images/iphone16pro-1.png" alt="Thumbnail 1" class="thumbnail">
+                   <img src="images/iphone16pro-2.png" alt="Thumbnail 2" class="thumbnail">
+                   <img src="images/iphone16pro-3.png" alt="Thumbnail 3" class="thumbnail">
+               </div>
+           </div>
+   
+          
+           <div class="product-details">
+               <header>
+                   <h1>iPhone 15 Pro</h1>
+                   <button class="buy-button" >BUY</button>
+               </header>
+               <p class="price">From $999 or $50/mo for 24 months</p>
+               <ul>
+                   <li><strong>Brand:</strong> Apple</li>
+                   <li><strong>Operating System:</strong> iOS 16</li>
+                   <li><strong>RAM:</strong> 8 GB</li>
+                   <li><strong>Storage:</strong> 256 GB</li>
+                   <li><strong>Screen Size:</strong> 6.7 inches</li>
+                   <li><strong>Wireless Carrier:</strong> Unlocked for All Carriers</li>
+                   <li><strong>Cellular Technology:</strong> 5G</li>
+                   <li><strong>Connectivity:</strong> Bluetooth</li>
+                   <li><strong>Color:</strong> Gold</li>
+                   <li><strong>Processor:</strong> A17 Bionic Chip</li>
+                   <li><strong>Camera:</strong> 48 MP Main, Ultra Wide, and Telephoto</li>
+                   <li><strong>Battery Life:</strong> Up to 23 hours</li>
+                   <li><strong>Material:</strong> Titanium</li>
+               </ul>
+           </div>
+       </section>
+
+
+
+       <div class="main_div">
+        <h2 style="text-align: center;">More about the iPhone 16</h2>
+        <div class="vid_div">
+            <video class="vid" src="images/iPhone16_AD_vid.mp4" muted loop autoplay  ></video>
+       </div>
+        <div class="container_div">
+            <div class="div_1"><img src="images/P_AD_1.png" alt=""></div>
+            <div class="div_2"><img src="images/P_AD_2.png" alt=""></div>
+            <div class="div_3"><img src="images/P_AD_4.png" alt=""></div>
+            <div class="div_4"><img src="images/P_AD_3.png" alt=""></div>
+        </div>
+    </div>
+
+
+
+       <h2 style="padding-left: 50px; color: gray;">Similar Compilations</h2>
+
+       <div class="relative_div">
+          
+           <div class="relative">
+              <img class="relative_img" src="images/relative.png" alt="">
+               <h1>iPhone 16 plus</h1>
+               <button>Check out</button>
+           </div>
+
+          <div class="relative">
+           <img class="relative_img" src="images/relative.png" alt="">
+            <h1>iPhone 16 plus</h1>
+            <button>Check out</button>
+          </div>
+
+          <div class="relative">
+           <img class="relative_img" src="images/relative.png" alt="">
+            <h1>iPhone 16 plus</h1>
+            <button>Check out</button>
+          </div>
+
+       </div>
+
+    </main>
+    <footer>
+        <div class="foot_div">
+            <div class="footer-content">
+                <div class="footer-section about">
+                    <h3>About Us</h3>
+                    <p>Judah Shop is your one-stop store for premium electronics and accessories. We provide top brands and excellent customer service.</p>
+                </div>
+                <div class="footer-section links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Shop</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section contact">
+                    <h3>Contact Us</h3>
+                    <p>Email: support@judahshop.com</p>
+                    <p>Phone: +123 456 7890</p>
+                    <p>Address: 123 Tech Street, Innovation City</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2024 Judah Shop. All rights reserved.
+            </div>
+        </div>
+        
+    </footer>
+    
+</body>
+<script>
+
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const videoContainer = document.querySelector(".vid_div"); // Select the container of all videos
+    
+        // Create an IntersectionObserver
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+                    // Calculate the intersection ratio (starting from 10% visibility)
+                    const adjustedRatio = (entry.intersectionRatio - 0.15) / 0.9; // Normalize from 0 to 1
+    
+                    // Map the ratio to the desired border-radius range (0 to 50px)
+                    const borderRadius = adjustedRatio * 50;
+    
+                    // Apply the border-radius dynamically to all videos
+                    document.querySelectorAll(".vid").forEach((video) => {
+                        video.style.borderRadius = `${borderRadius}px`;
+    
+                        // Calculate the size reduction (30% less at full visibility)
+                        const scale = 1 - (adjustedRatio * 0.15);
+                        video.style.transform = `scale(${scale})`;
+                    });
+                } else if (entry.intersectionRatio <= 0.1) {
+                    // Reset styles if less than 10% of the container is visible
+                    document.querySelectorAll(".vid").forEach((video) => {
+                        video.style.borderRadius = "0px";
+                        video.style.transform = "scale(1)";
+                    });
+                }
+            });
+        }, {
+            threshold: Array.from({ length: 101 }, (_, i) => i / 100) // Check for 0%, 1%, 2%, ... 100%
+        });
+    
+        // Observe the video container
+        observer.observe(videoContainer);
+    });
+    
+       
+    
+        </script>
+    
+</html>
