@@ -1,0 +1,84 @@
+@import url(main.css);
+.header_div
+{
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.top_ul li:hover
+{
+    cursor: pointer;
+}
+.top_div 
+{
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+background-color: transparent;
+padding: 10px 0; 
+color: black;
+}
+
+/* Apple Div */
+.apple_div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    margin-top: 25px;
+}
+
+.logo {
+    width: 150px;
+    height: auto;
+    margin-right: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+.apple-tagline {
+    font-size: 16px;
+    font-style: italic;
+    color: #777;
+    margin-top: 10px;
+    text-align: center;
+}
+
+
+/* Navigation Bar */
+.middle-nav {
+    background-color: #fff;
+    padding: 15px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.middle-nav-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.middle-nav-list a {
+    text-decoration: none;
+    font-size: 15px;
+    color: #333;
+    padding: 8px 12px;
+}
