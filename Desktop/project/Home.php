@@ -53,7 +53,7 @@
                 $servername = 'localhost';
                 $username = 'root';
                 $password = 'password';
-                $database = 'shop';
+                $database = 'test_shop';
 
                 // Create a connection
                 $conn = new mysqli($servername, $username, $password, $database);

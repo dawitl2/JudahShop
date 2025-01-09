@@ -1,0 +1,122 @@
+-- Create the database
+CREATE DATABASE shop;
+USE shop;
+
+-- 1. Create Users Table
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Create Brands Table
+CREATE TABLE Brands (
+    brand_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT NULL
+);
+
+-- 3. Create Categories Table
+CREATE TABLE Categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    parent_category_id INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (parent_category_id) REFERENCES Categories(category_id)
+);
+
+-- 4. Create Products Table
+CREATE TABLE Products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    brand_id INT NOT NULL,
+    category_id INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    description TEXT NULL,
+    features TEXT NULL,
+    video_url VARCHAR(255) NULL,
+    image_url VARCHAR(255) NULL, -- New column for product image
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (brand_id) REFERENCES Brands(brand_id),
+    FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+);
+
+-- 5. Create History Table
+CREATE TABLE History (
+    history_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    action ENUM('viewed', 'purchased', 'wishlist') NOT NULL,
+    quantity INT NULL,
+    price DECIMAL(10,2) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+USE shop;
+
+INSERT INTO Users (name, email, username, password)
+VALUES ('John Doe', 'johndoe@example.com', 'johndoe', 'securepassword123');
+
+INSERT INTO Brands (name, description)
+VALUES ('Apple', 'Leading technology brand known for its innovative products.');
+
+INSERT INTO Categories (name, parent_category_id)
+VALUES ('Smartphones', NULL),('Laptop', NULL),('tablet', NULL),('earphone', NULL),('watch', NULL);
+
+INSERT INTO Products (name, brand_id, category_id, price, description, features, video_url, image_url)
+VALUES 
+(
+    'iPhone 16',
+    1, -- brand_id (Apple)
+    1, -- category_id (Smartphones)
+    999.99,
+    'The latest iPhone with cutting-edge technology.',
+    '5G, A17 Bionic chip, 128GB storage',
+    'https://example.com/iphone16-demo.mp4',
+    'images/iphone16_blue.png'
+),
+(
+    'Mac Air M3',
+    1, -- brand_id (Apple)
+    2, -- category_id (mac)
+    1999.99,
+    'The latest mac with cutting-edge technology.',
+    '5G, A17 Bionic chip, 12TB storage',
+    'https://example.com/mac-demo.mp4',
+    'images/a1.png'
+),
+(
+    'Mac mini',
+    1, -- brand_id (Apple)
+    2, -- category_id (Smartphones)
+    1999.99,
+    'The latest mac with cutting-edge technology.',
+    '5G, A17 Bionic chip, 12TB storage',
+    'https://example.com/mac-demo.mp4',
+    'images/a2.png'
+),
+(
+    'Apple Watch 4',
+    1, -- brand_id (Apple)
+    5, -- category_id (watch)
+    1999.99,
+    'The latest mac with cutting-edge technology.',
+    '5G, A17 Bionic chip, 12TB storage',
+    'https://example.com/mac-demo.mp4',
+    'images/a3.png'
+);
+
+INSERT INTO History (user_id, product_id, action, quantity, price)
+VALUES (
+    1,  -- user_id (John Doe)
+    1,  -- product_id (iPhone 16)
+    'purchased',
+    1,  -- quantity
+    999.99  -- price
+);
+
