@@ -33,22 +33,6 @@
             <!-- Category Navigation -->
             <nav class="icon-nav">
                 <?php
-                $categories = [
-                    "Accessories", "PC", "Phone", "Tablet", "EarPhone", 
-                    "Watch", "Speakers", "TV", "HeadPhone", "Bud"
-                ];
-                foreach ($categories as $index => $category) {
-                    echo "<div class='icon-item'>
-                            <img class='AD_img' src='images/" . ($index + 1) . ".png' alt='{$category}'>
-                            <p>{$category}</p>
-                          </div>";
-                }
-                ?>
-            </nav>
-
-            <!-- Products and Goods -->
-            <section class="product-listings">
-                <?php
                 // Database credentials
                 $servername = 'localhost';
                 $username = 'root';
@@ -63,7 +47,29 @@
                     die("Connection failed: " . $conn->connect_error);
                 }
 
-                // Query to fetch products
+                // Fetch categories dynamically
+                $categoriesSql = "SELECT category_id, name FROM Categories ORDER BY name";
+                $categoriesResult = $conn->query($categoriesSql);
+
+                if ($categoriesResult && $categoriesResult->num_rows > 0) {
+                    while ($category = $categoriesResult->fetch_assoc()) {
+                        echo "<div class='icon-item'>
+                                <a href='?category_id=" . $category['category_id'] . "'>
+                                    <img class='AD_img' src='images/" . $category['name'] . ".png' alt='" . htmlspecialchars($category['name']) . "'>
+                                    <p>" . htmlspecialchars($category['name']) . "</p>
+                                </a>
+                              </div>";
+                    }
+                }
+                ?>
+            </nav>
+
+            <!-- Products and Goods -->
+            <section class="product-listings">
+                <?php
+                // Filter products by category if category_id is set
+                $categoryFilter = isset($_GET['category_id']) ? intval($_GET['category_id']) : null;
+
                 $sql = "
                     SELECT 
                         Products.name AS product_name, 
@@ -74,6 +80,13 @@
                     FROM Products 
                     JOIN Brands ON Products.brand_id = Brands.brand_id
                 ";
+
+                if ($categoryFilter) {
+                    $sql .= " WHERE Products.category_id = $categoryFilter";
+                }
+
+                $sql .= " ORDER BY Brands.name";
+
                 $result = $conn->query($sql);
 
                 // Start generating the HTML
@@ -91,7 +104,7 @@
                             $current_brand = $row['brand_name'];
                             echo "<div class='product_div'>
                                     <h1 class='font'>
-                                        <a class='lable-p' href='{$current_brand}.php'>{$current_brand}</a> 
+                                        <a class='lable-p' href='" . htmlspecialchars($current_brand) . ".php'>" . htmlspecialchars($current_brand) . "</a> 
                                         <span class='lable-g'>Products</span>
                                     </h1>
                                     <div class='row_div'>";
@@ -100,10 +113,10 @@
                         // Generate product HTML
                         echo "
                             <div class='product-item'>
-                                <p class='product-name'>{$row['product_name']}</p>
-                                <img class='a_img' src='{$row['image_url']}' alt='{$row['product_name']}'>
+                                <p class='product-name'>" . htmlspecialchars($row['product_name']) . "</p>
+                                <img class='a_img' src='" . htmlspecialchars($row['image_url']) . "' alt='" . htmlspecialchars($row['product_name']) . "'>
                                 <div class='product_btn'>
-                                    <p class='product-price'>From \${$row['price']} or \$50/mo for 24 mo.</p>
+                                    <p class='product-price'>From \$" . htmlspecialchars($row['price']) . " or \$50/mo for 24 mo.</p>
                                     <button class='buy-btn'>Buy</button>
                                 </div>
                             </div>";

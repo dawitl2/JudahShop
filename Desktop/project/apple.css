@@ -83,6 +83,11 @@ color: black;
     padding: 8px 12px;
 }
 
+.label{
+    padding-left: 20px;
+    color: #919DF1;
+}
+
 @media (max-width: 640px) {
     .apple_div {
         display: flex;

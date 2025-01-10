@@ -1,6 +1,6 @@
 -- Create the database
-CREATE DATABASE shop;
-USE shop;
+CREATE DATABASE test_shop;
+USE test_shop;
 
 -- 1. Create Users Table
 CREATE TABLE Users (
@@ -16,7 +16,8 @@ CREATE TABLE Users (
 CREATE TABLE Brands (
     brand_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
-    description TEXT NULL
+    description TEXT NULL,
+    logo_url VARCHAR(255) NOT NULL -- Column for brand logo
 );
 
 -- 3. Create Categories Table
@@ -57,16 +58,22 @@ CREATE TABLE History (
     FOREIGN KEY (product_id) REFERENCES Products(product_id)
 );
 
-USE shop;
+USE test_shop;
 
 INSERT INTO Users (name, email, username, password)
 VALUES ('John Doe', 'johndoe@example.com', 'johndoe', 'securepassword123');
 
-INSERT INTO Brands (name, description)
-VALUES ('Apple', 'Leading technology brand known for its innovative products.');
+INSERT INTO Brands (name, description, logo_url)
+VALUES 
+('Apple', 'Leading technology brand known for its innovative products.', 'images/apple_logo.png');
 
 INSERT INTO Categories (name, parent_category_id)
-VALUES ('Smartphones', NULL),('Laptop', NULL),('tablet', NULL),('earphone', NULL),('watch', NULL);
+VALUES 
+('Smartphones', NULL),
+('Laptop', NULL),
+('Tablet', NULL),
+('Earphone', NULL),
+('Watch', NULL);
 
 INSERT INTO Products (name, brand_id, category_id, price, description, features, video_url, image_url)
 VALUES 
@@ -83,31 +90,31 @@ VALUES
 (
     'Mac Air M3',
     1, -- brand_id (Apple)
-    2, -- category_id (mac)
+    2, -- category_id (Laptop)
     1999.99,
-    'The latest mac with cutting-edge technology.',
+    'The latest Mac with cutting-edge technology.',
     '5G, A17 Bionic chip, 12TB storage',
     'https://example.com/mac-demo.mp4',
     'images/a1.png'
 ),
 (
-    'Mac mini',
+    'Mac Mini',
     1, -- brand_id (Apple)
-    2, -- category_id (Smartphones)
+    2, -- category_id (Laptop)
     1999.99,
-    'The latest mac with cutting-edge technology.',
+    'Compact and powerful Mac Mini.',
     '5G, A17 Bionic chip, 12TB storage',
-    'https://example.com/mac-demo.mp4',
+    'https://example.com/mac-mini-demo.mp4',
     'images/a2.png'
 ),
 (
     'Apple Watch 4',
     1, -- brand_id (Apple)
-    5, -- category_id (watch)
+    5, -- category_id (Watch)
     1999.99,
-    'The latest mac with cutting-edge technology.',
-    '5G, A17 Bionic chip, 12TB storage',
-    'https://example.com/mac-demo.mp4',
+    'Revolutionary features in a smartwatch.',
+    'Fitness tracking, advanced health monitoring',
+    'https://example.com/watch-demo.mp4',
     'images/a3.png'
 );
 
@@ -119,4 +126,3 @@ VALUES (
     1,  -- quantity
     999.99  -- price
 );
-
