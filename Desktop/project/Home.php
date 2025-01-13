@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
-    <header>
+<header>
         <div class="top_div">
             <ul class="top_ul">
                 <li>Home</li>
@@ -70,7 +70,8 @@
                         Products.price, 
                         Products.description, 
                         Products.image_url, 
-                        Brands.name AS brand_name 
+                        Brands.name AS brand_name, 
+                        Brands.brand_id 
                     FROM Products 
                     JOIN Brands ON Products.brand_id = Brands.brand_id
                 ";
@@ -91,8 +92,8 @@
                             $current_brand = $row['brand_name'];
                             echo "<div class='product_div'>
                                     <h1 class='font'>
-                                        <a class='lable-p' href='{$current_brand}.php'>{$current_brand}</a> 
-                                        <span class='lable-g'>Products</span>
+                                        <a class='label-p' href='brand.php?brand_id=" . $row['brand_id'] . "'>" . htmlspecialchars($current_brand) . "</a> 
+                                        <span class='label-g'>Products</span>
                                     </h1>
                                     <div class='row_div'>";
                         }
@@ -100,10 +101,10 @@
                         // Generate product HTML
                         echo "
                             <div class='product-item'>
-                                <p class='product-name'>{$row['product_name']}</p>
-                                <img class='a_img' src='{$row['image_url']}' alt='{$row['product_name']}'>
+                                <p class='product-name'>" . htmlspecialchars($row['product_name']) . "</p>
+                                <img class='a_img' src='" . htmlspecialchars($row['image_url']) . "' alt='" . htmlspecialchars($row['product_name']) . "'>
                                 <div class='product_btn'>
-                                    <p class='product-price'>From \${$row['price']} or \$50/mo for 24 mo.</p>
+                                    <p class='product-price'>From $" . number_format($row['price'], 2) . " or $50/mo for 24 mo.</p>
                                     <button class='buy-btn'>Buy</button>
                                 </div>
                             </div>";

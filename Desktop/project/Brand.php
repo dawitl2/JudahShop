@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple Products - Judah Shop</title>
-    <link rel="stylesheet" href="apple.css">
+    <title>Brand Products - Judah Shop</title>
+    <link rel="stylesheet" href="Brand.css">
 </head>
 <body>
-    <header>
+<header>
         <div class="top_div">
             <ul class="top_ul">
                 <li>Home</li>
@@ -34,30 +34,31 @@
                 die("Connection failed: " . $conn->connect_error);
             }
 
+            // Get the brand ID from the query parameter
+            $brand_id = isset($_GET['brand_id']) ? intval($_GET['brand_id']) : 0;
+
             // Fetch brand logo and description
-            $brandSql = "SELECT logo_url, description FROM Brands WHERE name = 'Apple'";
+            $brandSql = "SELECT name, logo_url, description FROM Brands WHERE brand_id = $brand_id";
             $brandResult = $conn->query($brandSql);
 
             if ($brandResult && $brandResult->num_rows > 0) {
                 $brand = $brandResult->fetch_assoc();
-                $logoUrl = $brand['logo_url'];
-                $description = $brand['description'];
+                $brand_name = htmlspecialchars($brand['name']);
+                $logoUrl = htmlspecialchars($brand['logo_url']);
+                $description = htmlspecialchars($brand['description']);
             } else {
-                $logoUrl = 'images/default_logo.png'; // Fallback image
-                $description = 'Leading technology brand.';
-            }
-
-            // Ensure the image file exists
-            if (!file_exists($logoUrl)) {
-                $logoUrl = 'images/default_logo.png'; // Default fallback if path is invalid
+                // Fallback for invalid or missing brand_id
+                $brand_name = 'Unknown Brand';
+                $logoUrl = 'images/default_logo.png';
+                $description = 'Brand not found.';
             }
             ?>
-            <div class="apple_div">
-                <img class="logo" src="<?php echo htmlspecialchars($logoUrl); ?>" alt="Apple Logo">
+            <div class="brand_div">
+                <img class="logo" src="<?php echo $logoUrl; ?>" alt="<?php echo $brand_name; ?> Logo">
                 <div class="card">
                     <div class="loader">
-                        <p><?php echo htmlspecialchars($description); ?></p>
-                        <p class="apple-tagline">"Think Different. Experience Innovation."</p>
+                        <p><?php echo $description; ?></p>
+                        <p class="brand-tagline">"Discover the best products from <?php echo $brand_name; ?>."</p>
                     </div>
                 </div>
             </div>
@@ -66,13 +67,17 @@
         <nav>
             <ul class="middle-nav-list">
                 <?php
-                // Fetch categories dynamically
-                $categoriesSql = "SELECT category_id, name FROM Categories ORDER BY name";
+                // Fetch categories dynamically for the selected brand
+                $categoriesSql = "SELECT DISTINCT Categories.category_id, Categories.name 
+                                FROM Products 
+                                JOIN Categories ON Products.category_id = Categories.category_id 
+                                WHERE Products.brand_id = $brand_id
+                                ORDER BY Categories.name";
                 $categoriesResult = $conn->query($categoriesSql);
 
                 if ($categoriesResult && $categoriesResult->num_rows > 0) {
                     while ($category = $categoriesResult->fetch_assoc()) {
-                        echo "<li><a href='?category_id=" . $category['category_id'] . "'>" . htmlspecialchars($category['name']) . "</a></li>";
+                        echo "<li><a href='?brand_id=$brand_id&category_id=" . $category['category_id'] . "'>" . htmlspecialchars($category['name']) . "</a></li>";
                     }
                 }
                 ?>
@@ -93,10 +98,11 @@
                         Products.image_url 
                     FROM Products
                     JOIN Categories ON Products.category_id = Categories.category_id
+                    WHERE Products.brand_id = $brand_id
                 ";
 
                 if ($categoryFilter) {
-                    $sql .= " WHERE Categories.category_id = $categoryFilter";
+                    $sql .= " AND Categories.category_id = $categoryFilter";
                 }
 
                 $sql .= " ORDER BY Categories.name;";
@@ -111,16 +117,16 @@
                             if (!empty($current_category)) {
                                 echo '</div>';
                             }
-                            $current_category = $row['category_name'];
+                            $current_category = htmlspecialchars($row['category_name']);
                             echo "<h1 class='label'>{$current_category}</h1><div class='row_div'>";
                         }
 
                         echo "
                             <div class='product-item'>
-                                <p class='product-name'>{$row['product_name']}</p>
-                                <img class='a_img' src='{$row['image_url']}' alt='{$row['product_name']}'>
+                                <p class='product-name'>" . htmlspecialchars($row['product_name']) . "</p>
+                                <img class='a_img' src='" . htmlspecialchars($row['image_url']) . "' alt='" . htmlspecialchars($row['product_name']) . "'>
                                 <div class='product_btn'>
-                                    <p class='product-price'>From \${$row['price']}</p>
+                                    <p class='product-price'>From $" . number_format($row['price'], 2) . "</p>
                                     <button class='buy-btn'>Buy</button>
                                 </div>
                             </div>
@@ -128,7 +134,7 @@
                     }
                     echo '</div>';
                 } else {
-                    echo '<p>No products available.</p>';
+                    echo '<p>No products available for this brand.</p>';
                 }
 
                 $conn->close();
@@ -146,7 +152,7 @@
                 <div class="footer-section links">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#">Home</a></li>
+                        <li><a href="index.php">Home</a></li>
                         <li><a href="#">Shop</a></li>
                         <li><a href="#">About</a></li>
                         <li><a href="#">Contact</a></li>

@@ -58,15 +58,20 @@ CREATE TABLE History (
     FOREIGN KEY (product_id) REFERENCES Products(product_id)
 );
 
+-- Insert initial data
 USE test_shop;
 
+-- Insert User
 INSERT INTO Users (name, email, username, password)
 VALUES ('John Doe', 'johndoe@example.com', 'johndoe', 'securepassword123');
 
+-- Insert Brands
 INSERT INTO Brands (name, description, logo_url)
 VALUES 
-('Apple', 'Leading technology brand known for its innovative products.', 'images/apple_logo.png');
+('Apple', 'Leading technology brand known for its innovative products.', 'images/apple_logo.png'),
+('Samsung', 'A global leader in technology and innovation.', 'images/samsung_logo.png');
 
+-- Insert Categories
 INSERT INTO Categories (name, parent_category_id)
 VALUES 
 ('Smartphones', NULL),
@@ -75,6 +80,7 @@ VALUES
 ('Earphone', NULL),
 ('Watch', NULL);
 
+-- Insert Apple Products
 INSERT INTO Products (name, brand_id, category_id, price, description, features, video_url, image_url)
 VALUES 
 (
@@ -118,11 +124,74 @@ VALUES
     'images/a3.png'
 );
 
+-- Insert Samsung Products
+INSERT INTO Products (name, brand_id, category_id, price, description, features, video_url, image_url)
+VALUES 
+(
+    'Samsung Galaxy S23 Ultra',
+    2, -- brand_id (Samsung)
+    1, -- category_id (Smartphones)
+    1199.99,
+    'Experience the ultimate in flagship technology with the Galaxy S23 Ultra.',
+    '200MP Camera, Snapdragon 8 Gen 2, 5000mAh battery',
+    'https://example.com/galaxy-s23-ultra-demo.mp4',
+    'images/3.png'
+),
+(
+    'Samsung Galaxy Tab S9',
+    2, -- brand_id (Samsung)
+    3, -- category_id (Tablet)
+    899.99,
+    'A premium tablet for productivity and entertainment.',
+    '11-inch AMOLED Display, Snapdragon 8 Gen 2, S Pen included',
+    'https://example.com/galaxy-tab-s9-demo.mp4',
+    'images/a5.png'
+),
+(
+    'Samsung Galaxy Buds2',
+    2, -- brand_id (Samsung)
+    4, -- category_id (Earphone)
+    149.99,
+    'Next-level true wireless earbuds with ANC.',
+    'Active Noise Cancelling, Compact Design, 5-hour battery life',
+    'https://example.com/galaxy-buds2-demo.mp4',
+    'images/5.png'
+),
+(
+    'Samsung Galaxy Buds Live',
+    2, -- brand_id (Samsung)
+    4, -- category_id (Earphone)
+    169.99,
+    'Iconic design and crystal-clear sound.',
+    'Active Noise Cancelling, Unique Bean-Shaped Design, Long Battery Life',
+    'https://example.com/galaxy-buds-live-demo.mp4',
+    'images/a6.png'
+),
+(
+    'Samsung Galaxy Fold 5',
+    2, -- brand_id (Samsung)
+    1, -- category_id (Smartphones)
+    1799.99,
+    'Revolutionary foldable smartphone with cutting-edge technology.',
+    '7.6-inch AMOLED Display, Snapdragon 8 Gen 2, Foldable Design',
+    'https://example.com/galaxy-fold-5-demo.mp4',
+    'images/a4.png'
+);
+
+-- Insert Purchase History
 INSERT INTO History (user_id, product_id, action, quantity, price)
-VALUES (
+VALUES 
+(
     1,  -- user_id (John Doe)
     1,  -- product_id (iPhone 16)
     'purchased',
     1,  -- quantity
     999.99  -- price
+),
+(
+    1,  -- user_id (John Doe)
+    5,  -- product_id (Samsung Galaxy S23 Ultra)
+    'viewed',
+    NULL, -- quantity
+    NULL  -- price
 );
