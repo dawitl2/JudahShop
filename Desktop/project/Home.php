@@ -66,6 +66,7 @@
                 // Query to fetch products
                 $sql = "
                     SELECT 
+                        Products.product_id,
                         Products.name AS product_name, 
                         Products.price, 
                         Products.description, 
@@ -100,7 +101,7 @@
 
                         // Generate product HTML
                         echo "
-                            <div class='product-item'>
+                            <div class='product-item' onclick=\"window.location.href='product.php?product_id=" . $row['product_id'] . "'\">
                                 <p class='product-name'>" . htmlspecialchars($row['product_name']) . "</p>
                                 <img class='a_img' src='" . htmlspecialchars($row['image_url']) . "' alt='" . htmlspecialchars($row['product_name']) . "'>
                                 <div class='product_btn'>

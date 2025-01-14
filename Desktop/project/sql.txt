@@ -90,7 +90,7 @@ VALUES
     999.99,
     'The latest iPhone with cutting-edge technology.',
     '5G, A17 Bionic chip, 128GB storage',
-    'https://example.com/iphone16-demo.mp4',
+    'images/iPhone16_AD_vid.mp4',
     'images/iphone16_blue.png'
 ),
 (
@@ -100,7 +100,7 @@ VALUES
     1999.99,
     'The latest Mac with cutting-edge technology.',
     '5G, A17 Bionic chip, 12TB storage',
-    'https://example.com/mac-demo.mp4',
+    'https://drive.google.com/file/d/19xYl4Ip5dGLk3rRooBS_xnHUqFvLZcg4/view?usp=sharing',
     'images/a1.png'
 ),
 (
@@ -110,7 +110,7 @@ VALUES
     1999.99,
     'Compact and powerful Mac Mini.',
     '5G, A17 Bionic chip, 12TB storage',
-    'https://example.com/mac-mini-demo.mp4',
+    '',
     'images/a2.png'
 ),
 (
@@ -120,7 +120,7 @@ VALUES
     1999.99,
     'Revolutionary features in a smartwatch.',
     'Fitness tracking, advanced health monitoring',
-    'https://example.com/watch-demo.mp4',
+    '',
     'images/a3.png'
 );
 
@@ -134,7 +134,7 @@ VALUES
     1199.99,
     'Experience the ultimate in flagship technology with the Galaxy S23 Ultra.',
     '200MP Camera, Snapdragon 8 Gen 2, 5000mAh battery',
-    'https://example.com/galaxy-s23-ultra-demo.mp4',
+    'https://www.youtube.com/watch?v=zhoTX0RRXPQ',
     'images/3.png'
 ),
 (
@@ -144,7 +144,7 @@ VALUES
     899.99,
     'A premium tablet for productivity and entertainment.',
     '11-inch AMOLED Display, Snapdragon 8 Gen 2, S Pen included',
-    'https://example.com/galaxy-tab-s9-demo.mp4',
+    '',
     'images/a5.png'
 ),
 (
@@ -154,7 +154,7 @@ VALUES
     149.99,
     'Next-level true wireless earbuds with ANC.',
     'Active Noise Cancelling, Compact Design, 5-hour battery life',
-    'https://example.com/galaxy-buds2-demo.mp4',
+    '',
     'images/5.png'
 ),
 (
@@ -164,7 +164,7 @@ VALUES
     169.99,
     'Iconic design and crystal-clear sound.',
     'Active Noise Cancelling, Unique Bean-Shaped Design, Long Battery Life',
-    'https://example.com/galaxy-buds-live-demo.mp4',
+    '',
     'images/a6.png'
 ),
 (
@@ -174,7 +174,7 @@ VALUES
     1799.99,
     'Revolutionary foldable smartphone with cutting-edge technology.',
     '7.6-inch AMOLED Display, Snapdragon 8 Gen 2, Foldable Design',
-    'https://example.com/galaxy-fold-5-demo.mp4',
+    '',
     'images/a4.png'
 );
 
