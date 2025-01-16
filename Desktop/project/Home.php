@@ -21,6 +21,7 @@
             <li>Coupons</li>
             <li>Accessories</li>
         </ul>
+        <a href="Cart.php?user_id=1" class="cart-button">CART</a>
     </div>
 </header>
 <main>

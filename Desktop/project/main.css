@@ -20,16 +20,23 @@ html, body {
 .top_ul li:hover{
     cursor: pointer;
 }
-.top_div 
-{
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-background-color: transparent;
-color: white;
-z-index: 1000;
-padding: 10px 0; 
+
+.top_div {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: transparent;
+    color: white;
+    z-index: 1000;
+    padding: 10px 0; 
+    display: flex;
+    align-items: center; /* Ensures vertical alignment */
+}
+
+.top_div button {
+    margin-left: auto; /* Pushes the button to the right */
+    margin-right: 20px;
 }
 
 

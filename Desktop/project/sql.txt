@@ -17,7 +17,7 @@ CREATE TABLE Brands (
     brand_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
     description TEXT NULL,
-    logo_url VARCHAR(255) NOT NULL -- Column for brand logo
+    logo_url VARCHAR(255) NOT NULL
 );
 
 -- 3. Create Categories Table
@@ -39,7 +39,7 @@ CREATE TABLE Products (
     description TEXT NULL,
     features TEXT NULL,
     video_url VARCHAR(255) NULL,
-    image_url VARCHAR(255) NULL, -- New column for product image
+    image_url VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (brand_id) REFERENCES Brands(brand_id),
     FOREIGN KEY (category_id) REFERENCES Categories(category_id)
@@ -50,7 +50,7 @@ CREATE TABLE History (
     history_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     product_id INT NOT NULL,
-    action ENUM('viewed', 'purchased', 'wishlist') NOT NULL,
+    action ENUM('purchased', 'wishlist') NOT NULL,
     quantity INT NULL,
     price DECIMAL(10,2) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -61,9 +61,10 @@ CREATE TABLE History (
 -- Insert initial data
 USE test_shop;
 
--- Insert User
+-- Insert Users
 INSERT INTO Users (name, email, username, password)
-VALUES ('John Doe', 'johndoe@example.com', 'johndoe', 'securepassword123');
+VALUES 
+('John Doe', 'johndoe@example.com', 'johndoe', 'securepassword123');
 
 -- Insert Brands
 INSERT INTO Brands (name, description, logo_url)
@@ -83,115 +84,23 @@ VALUES
 -- Insert Apple Products
 INSERT INTO Products (name, brand_id, category_id, price, description, features, video_url, image_url)
 VALUES 
-(
-    'iPhone 16',
-    1, -- brand_id (Apple)
-    1, -- category_id (Smartphones)
-    999.99,
-    'The latest iPhone with cutting-edge technology.',
-    '5G, A17 Bionic chip, 128GB storage',
-    'images/iPhone16_AD_vid.mp4',
-    'images/iphone16_blue.png'
-),
-(
-    'Mac Air M3',
-    1, -- brand_id (Apple)
-    2, -- category_id (Laptop)
-    1999.99,
-    'The latest Mac with cutting-edge technology.',
-    '5G, A17 Bionic chip, 12TB storage',
-    'https://drive.google.com/file/d/19xYl4Ip5dGLk3rRooBS_xnHUqFvLZcg4/view?usp=sharing',
-    'images/a1.png'
-),
-(
-    'Mac Mini',
-    1, -- brand_id (Apple)
-    2, -- category_id (Laptop)
-    1999.99,
-    'Compact and powerful Mac Mini.',
-    '5G, A17 Bionic chip, 12TB storage',
-    '',
-    'images/a2.png'
-),
-(
-    'Apple Watch 4',
-    1, -- brand_id (Apple)
-    5, -- category_id (Watch)
-    1999.99,
-    'Revolutionary features in a smartwatch.',
-    'Fitness tracking, advanced health monitoring',
-    '',
-    'images/a3.png'
-);
+('iPhone 16', 1, 1, 999.99, 'The latest iPhone with cutting-edge technology.', 
+ '5G, A17 Bionic chip, 128GB storage', 'images/iPhone16_AD_vid.mp4', 'images/iphone16_blue.png'),
+('Mac Air M3', 1, 2, 1999.99, 'The latest Mac with cutting-edge technology.', 
+ 'M3 chip, 1TB SSD, Retina display', '', 'images/a1.png'),
+('Mac Mini', 1, 2, 999.99, 'Compact and powerful Mac Mini.', 
+ 'M3 chip, 512GB SSD, Compact design', '', 'images/a2.png'),
+('Apple Watch 4', 1, 5, 399.99, 'Revolutionary features in a smartwatch.', 
+ 'Fitness tracking, advanced health monitoring', '', 'images/a3.png');
 
 -- Insert Samsung Products
 INSERT INTO Products (name, brand_id, category_id, price, description, features, video_url, image_url)
 VALUES 
-(
-    'Samsung Galaxy S23 Ultra',
-    2, -- brand_id (Samsung)
-    1, -- category_id (Smartphones)
-    1199.99,
-    'Experience the ultimate in flagship technology with the Galaxy S23 Ultra.',
-    '200MP Camera, Snapdragon 8 Gen 2, 5000mAh battery',
-    'https://www.youtube.com/watch?v=zhoTX0RRXPQ',
-    'images/3.png'
-),
-(
-    'Samsung Galaxy Tab S9',
-    2, -- brand_id (Samsung)
-    3, -- category_id (Tablet)
-    899.99,
-    'A premium tablet for productivity and entertainment.',
-    '11-inch AMOLED Display, Snapdragon 8 Gen 2, S Pen included',
-    '',
-    'images/a5.png'
-),
-(
-    'Samsung Galaxy Buds2',
-    2, -- brand_id (Samsung)
-    4, -- category_id (Earphone)
-    149.99,
-    'Next-level true wireless earbuds with ANC.',
-    'Active Noise Cancelling, Compact Design, 5-hour battery life',
-    '',
-    'images/5.png'
-),
-(
-    'Samsung Galaxy Buds Live',
-    2, -- brand_id (Samsung)
-    4, -- category_id (Earphone)
-    169.99,
-    'Iconic design and crystal-clear sound.',
-    'Active Noise Cancelling, Unique Bean-Shaped Design, Long Battery Life',
-    '',
-    'images/a6.png'
-),
-(
-    'Samsung Galaxy Fold 5',
-    2, -- brand_id (Samsung)
-    1, -- category_id (Smartphones)
-    1799.99,
-    'Revolutionary foldable smartphone with cutting-edge technology.',
-    '7.6-inch AMOLED Display, Snapdragon 8 Gen 2, Foldable Design',
-    '',
-    'images/a4.png'
-);
-
--- Insert Purchase History
-INSERT INTO History (user_id, product_id, action, quantity, price)
-VALUES 
-(
-    1,  -- user_id (John Doe)
-    1,  -- product_id (iPhone 16)
-    'purchased',
-    1,  -- quantity
-    999.99  -- price
-),
-(
-    1,  -- user_id (John Doe)
-    5,  -- product_id (Samsung Galaxy S23 Ultra)
-    'viewed',
-    NULL, -- quantity
-    NULL  -- price
-);
+('Samsung Galaxy S23 Ultra', 2, 1, 1199.99, 'Experience the ultimate in flagship technology with the Galaxy S23 Ultra.', 
+ '200MP Camera, Snapdragon 8 Gen 2, 5000mAh battery', '', 'images/a4.png'),
+('Samsung Galaxy Tab S9', 2, 3, 899.99, 'A premium tablet for productivity and entertainment.', 
+ '11-inch AMOLED Display, Snapdragon 8 Gen 2, S Pen included', '', 'images/a5.png'),
+('Samsung Galaxy Buds2', 2, 4, 149.99, 'Next-level true wireless earbuds with ANC.', 
+ 'Active Noise Cancelling, Compact Design, 5-hour battery life', '', 'images/5.png'),
+('Samsung Galaxy Fold 5', 2, 1, 1799.99, 'Revolutionary foldable smartphone with cutting-edge technology.', 
+ '7.6-inch AMOLED Display, Snapdragon 8 Gen 2, Foldable Design', '', 'images/a6.png');

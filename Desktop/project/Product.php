@@ -156,5 +156,36 @@ if (!$product) {
             </div>
         </div>
     </footer>
+
+    <script>
+        document.querySelector('.buy-button').addEventListener('click', function () {
+            const productId = <?php echo $product_id; ?>; // Get the product ID
+            const userId = 1; // Static user ID for now, replace with dynamic user ID logic if available
+
+            fetch('add_to_history.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    product_id: productId,
+                    action: 'wishlist',
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Added to cart');
+                } else {
+                    alert('Failed to add to cart: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An unexpected error occurred.');
+            });
+        });
+    </script>
 </body>
 </html>
