@@ -12,8 +12,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// User ID (static for now, replace with dynamic logic)
-$user_id = 1;
+// User ID from query parameter
+$user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
+
+if ($user_id === 0) {
+    die("Invalid user ID.");
+}
 
 // Fetch wishlist items from History table
 $stmt = $conn->prepare("SELECT p.name AS product_name, p.image_url, p.price, b.name AS brand_name FROM History h 

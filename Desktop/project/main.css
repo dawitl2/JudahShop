@@ -34,7 +34,7 @@ html, body {
     align-items: center; /* Ensures vertical alignment */
 }
 
-.top_div button {
+.top_div a {
     margin-left: auto; /* Pushes the button to the right */
     margin-right: 20px;
 }

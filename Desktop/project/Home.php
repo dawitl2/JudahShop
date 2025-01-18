@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="main.css">
     <script>
         function filterProducts(category) {
-            // Redirect to the same page with a query parameter for filtering
-            window.location.href = `?category=${category}`;
+            const userId = new URLSearchParams(window.location.search).get('user_id');
+            window.location.href = `?category=${category}&user_id=${userId}`;
         }
     </script>
 </head>
@@ -21,7 +21,10 @@
             <li>Coupons</li>
             <li>Accessories</li>
         </ul>
-        <a href="Cart.php?user_id=1" class="cart-button">CART</a>
+        <?php
+        $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
+        ?>
+        <a href="Cart.php?user_id=<?= htmlspecialchars($user_id) ?>" class="cart-button">CART</a>
     </div>
 </header>
 <main>
@@ -70,7 +73,7 @@
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            // Get the selected category from query parameter
+            // Get the selected category and user_id from query parameters
             $selectedCategory = isset($_GET['category']) ? strtolower($_GET['category']) : '';
 
             // SQL query with filtering by category
@@ -117,7 +120,7 @@
                         $current_brand = $row['brand_name'];
                         echo "<div class='product_div'>
                                 <h1 class='font'>
-                                    <a class='label-p' href='brand.php?brand_id=" . $row['brand_id'] . "'>" . htmlspecialchars($current_brand) . "</a> 
+                                    <a class='label-p' href='brand.php?brand_id=" . $row['brand_id'] . "&user_id=$user_id'>" . htmlspecialchars($current_brand) . "</a> 
                                     <span class='label-g'>Products</span>
                                 </h1>
                                 <div class='row_div'>";
@@ -125,7 +128,7 @@
 
                     // Generate product HTML
                     echo "
-                        <div class='product-item' onclick=\"window.location.href='product.php?product_id=" . $row['product_id'] . "'\">
+                        <div class='product-item' onclick=\"window.location.href='product.php?product_id=" . $row['product_id'] . "&user_id=$user_id'\">
                             <p class='product-name'>" . htmlspecialchars($row['product_name']) . "</p>
                             <img class='a_img' src='" . htmlspecialchars($row['image_url']) . "' alt='" . htmlspecialchars($row['product_name']) . "'>
                             <div class='product_btn'>

@@ -13,8 +13,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch product ID from the query string
+// Fetch product ID and user ID from the query string
 $product_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
+$user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
+
+if ($product_id <= 0 || $user_id <= 0) {
+    die("Invalid product or user ID.");
+}
 
 // Fetch product data from the database
 $product = null;
@@ -44,8 +49,8 @@ if (!$product) {
     <header>
         <div class="top_div">
             <ul class="top_ul">
-                <li><a href="Home.php">Home</a></li>
-                <li><a href="Brand.php">Brands</a></li>
+                <li><a href="Home.php?user_id=<?php echo $user_id; ?>">Home</a></li>
+                <li><a href="Brand.php?user_id=<?php echo $user_id; ?>">Brands</a></li>
                 <li><a href="#">Coupons</a></li>
                 <li><a href="#">Accessories</a></li>
             </ul>
@@ -159,8 +164,8 @@ if (!$product) {
 
     <script>
         document.querySelector('.buy-button').addEventListener('click', function () {
-            const productId = <?php echo $product_id; ?>; // Get the product ID
-            const userId = 1; // Static user ID for now, replace with dynamic user ID logic if available
+            const productId = <?php echo $product_id; ?>;
+            const userId = <?php echo $user_id; ?>;
 
             fetch('add_to_history.php', {
                 method: 'POST',
