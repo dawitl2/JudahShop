@@ -34,10 +34,28 @@ html, body {
     align-items: center; /* Ensures vertical alignment */
 }
 
-.top_div a {
+.top_div div {
     margin-left: auto; /* Pushes the button to the right */
     margin-right: 20px;
 }
+
+.right-stuff {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-field {
+    display: none;
+    margin-right: 10px; /* Adjust spacing between input and button */
+}
+
+.right-stuff:hover .search-field {
+    display: inline-block; /* Ensure the input stays visible when hovering */
+}
+
+
+
 
 
 /*-----------AD----------*/

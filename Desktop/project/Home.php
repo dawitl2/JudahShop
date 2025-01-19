@@ -10,6 +10,25 @@
             const userId = new URLSearchParams(window.location.search).get('user_id');
             window.location.href = `?category=${category}&user_id=${userId}`;
         }
+
+        function searchProducts() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const productItems = document.querySelectorAll('.product-item');
+
+            productItems.forEach(item => {
+                const productName = item.querySelector('.product-name').textContent.toLowerCase();
+                if (productName.includes(searchInput)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleSearchField() {
+            const searchField = document.getElementById('search-field');
+            searchField.classList.toggle('show');
+        }
     </script>
 </head>
 <body>
@@ -24,7 +43,15 @@
         <?php
         $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
         ?>
-        <a href="Cart.php?user_id=<?= htmlspecialchars($user_id) ?>" class="cart-button">CART</a>
+        <div class="right-stuff">
+        <div class="search-container" onmouseover="toggleSearchField()" onmouseout="toggleSearchField()">
+                <button class="search-button">Search</button>
+                <div id="search-field" class="search-field">
+                    <input type="text" id="search-input" placeholder="Search products..." oninput="searchProducts()">
+                </div>
+            </div>
+            <a href="Cart.php?user_id=<?= htmlspecialchars($user_id) ?>" class="cart-button">CART</a>
+        </div>
     </div>
 </header>
 <main>
@@ -59,24 +86,19 @@
         <!-- Products and Goods -->
         <section class="product-listings">
             <?php
-            // Database credentials
             $servername = 'localhost';
             $username = 'root';
             $password = 'password';
             $database = 'test_shop';
 
-            // Create a connection
             $conn = new mysqli($servername, $username, $password, $database);
 
-            // Check connection
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            // Get the selected category and user_id from query parameters
             $selectedCategory = isset($_GET['category']) ? strtolower($_GET['category']) : '';
 
-            // SQL query with filtering by category
             $sql = "
                 SELECT 
                     Products.product_id,
@@ -105,18 +127,14 @@
             $stmt->execute();
             $result = $stmt->get_result();
 
-            // Start generating the HTML
             if ($result->num_rows > 0) {
                 $current_brand = "";
 
                 while ($row = $result->fetch_assoc()) {
-                    // Check if the brand has changed
                     if ($current_brand !== $row['brand_name']) {
                         if (!empty($current_brand)) {
-                            // Close previous brand's divs
                             echo "</div>";
                         }
-                        // Start a new brand section
                         $current_brand = $row['brand_name'];
                         echo "<div class='product_div'>
                                 <h1 class='font'>
@@ -126,7 +144,6 @@
                                 <div class='row_div'>";
                     }
 
-                    // Generate product HTML
                     echo "
                         <div class='product-item' onclick=\"window.location.href='product.php?product_id=" . $row['product_id'] . "&user_id=$user_id'\">
                             <p class='product-name'>" . htmlspecialchars($row['product_name']) . "</p>
@@ -137,7 +154,6 @@
                             </div>
                         </div>";
                 }
-                // Close the last brand's divs
                 echo "</div>";
             } else {
                 echo "<p>No products available for the selected category.</p>";

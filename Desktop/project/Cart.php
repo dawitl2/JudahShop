@@ -19,8 +19,24 @@ if ($user_id === 0) {
     die("Invalid user ID.");
 }
 
+// Handle deletion request
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (isset($input['product_id'])) {
+        $product_id = (int)$input['product_id'];
+
+        $delete_stmt = $conn->prepare("DELETE FROM History WHERE user_id = ? AND product_id = ? AND action = 'wishlist'");
+        $delete_stmt->bind_param("ii", $user_id, $product_id);
+        $delete_stmt->execute();
+        $delete_stmt->close();
+
+        echo json_encode(["success" => true, "product_id" => $product_id]);
+        exit;
+    }
+}
+
 // Fetch wishlist items from History table
-$stmt = $conn->prepare("SELECT p.name AS product_name, p.image_url, p.price, b.name AS brand_name FROM History h 
+$stmt = $conn->prepare("SELECT p.product_id, p.name AS product_name, p.image_url, p.price, b.name AS brand_name FROM History h 
     JOIN Products p ON h.product_id = p.product_id 
     JOIN Brands b ON p.brand_id = b.brand_id 
     WHERE h.user_id = ? AND h.action = 'wishlist'");
@@ -84,6 +100,21 @@ $conn->close();
         th {
             background-color: #f4f4f4;
         }
+        tr:hover {
+            background-color: #f9eaea;
+        }
+        .remove-btn {
+            display: none;
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        tr:hover .remove-btn {
+            display: inline-block;
+        }
         .total {
             font-weight: bold;
             text-align: right;
@@ -109,6 +140,36 @@ $conn->close();
             margin-top: 20px;
         }
     </style>
+    <script>
+        function removeProduct(productId) {
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const row = document.querySelector(`tr[data-product-id='${data.product_id}']`);
+                    row.remove();
+
+                    // Update totals
+                    let subtotal = 0;
+                    document.querySelectorAll('tr[data-product-id]').forEach(row => {
+                        const price = parseFloat(row.querySelector('.product-price').textContent.replace('$', ''));
+                        subtotal += price;
+                    });
+
+                    const tax = subtotal * 0.15;
+                    const grandTotal = subtotal + tax;
+
+                    document.querySelector('.subtotal').textContent = `Sub Total: $${subtotal.toFixed(2)}`;
+                    document.querySelector('.tax').textContent = `Total Tax: $${tax.toFixed(2)}`;
+                    document.querySelector('.grand-total').textContent = `Grand Total: $${grandTotal.toFixed(2)}`;
+                }
+            });
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -121,6 +182,7 @@ $conn->close();
                 <tr>
                     <th>Items</th>
                     <th>Price</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -129,7 +191,7 @@ $conn->close();
                 foreach ($wishlist_items as $item): 
                     $subtotal += $item['price'];
                 ?>
-                <tr>
+                <tr data-product-id="<?php echo $item['product_id']; ?>">
                     <td>
                         <div style="display: flex; align-items: center;">
                             <img src="<?php echo htmlspecialchars($item['image_url']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>" style="width: 50px; height: 50px; margin-right: 10px;">
@@ -139,20 +201,18 @@ $conn->close();
                             </div>
                         </div>
                     </td>
-                    <td>$<?php echo number_format($item['price'], 2); ?></td>
+                    <td class="product-price">$<?php echo number_format($item['price'], 2); ?></td>
+                    <td><button class="remove-btn" onclick="removeProduct(<?php echo $item['product_id']; ?>)">X</button></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
         <div class="totals">
-            <p class="total">Sub Total: $<?php echo number_format($subtotal, 2); ?></p>
-            <p class="total">Total Tax: $<?php echo number_format($subtotal * 0.15, 2); ?></p>
-            <p class="total">Grand Total: $<?php echo number_format($subtotal * 1.15, 2); ?></p>
+            <p class="subtotal">Sub Total: $<?php echo number_format($subtotal, 2); ?></p>
+            <p class="tax">Total Tax: $<?php echo number_format($subtotal * 0.15, 2); ?></p>
+            <p class="grand-total">Grand Total: $<?php echo number_format($subtotal * 1.15, 2); ?></p>
         </div>
         <a href="#" class="checkout">Check Out</a>
     </main>
-    <footer>
-        &copy; 2025 Judah Shop. All rights reserved.
-    </footer>
 </body>
 </html>
