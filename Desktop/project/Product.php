@@ -35,6 +35,21 @@ if ($product_id > 0) {
 if (!$product) {
     die("Product not found.");
 }
+
+// Fetch similar products from the same category
+$similar_products = [];
+if ($product_id > 0) {
+    $stmt = $conn->prepare(
+        "SELECT product_id, name, image_url, price FROM Products 
+         WHERE category_id = ? AND product_id != ? 
+         LIMIT 3"
+    );
+    $stmt->bind_param("ii", $product['category_id'], $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $similar_products = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -44,6 +59,37 @@ if (!$product) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($product['name']); ?></title>
     <link rel="stylesheet" href="product.css">
+    <style>
+        .product-images {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .main-image {
+            width: 300px;
+            height: 300px;
+            cursor: zoom-in;
+            object-fit: cover;
+        }
+        .zoom-window {
+            display: none;
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+            border: 2px solid #ccc;
+            background-color: white;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .zoom-window img {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -59,7 +105,13 @@ if (!$product) {
     <main>
         <section class="product-overview">
             <div class="product-images">
-                <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?> Main Image" class="main-image">
+                <img 
+                    src="<?php echo htmlspecialchars($product['image_url']); ?>" 
+                    alt="<?php echo htmlspecialchars($product['name']); ?> Main Image" 
+                    class="main-image">
+                <div class="zoom-window">
+                    <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="Zoomed Image">
+                </div>
                 <div class="thumbnails">
                     <!-- Static thumbnails for now -->
                     <img src="images/iphone16pro-1.png" alt="Thumbnail 1" class="thumbnail">
@@ -113,23 +165,14 @@ if (!$product) {
 
         <h2 style="padding-left: 50px; color: gray;">Similar Compilations</h2>
         <div class="relative_div">
+            <?php foreach ($similar_products as $similar): ?>
             <div class="relative">
-                <img class="relative_img" src="images/relative.png" alt="">
-                <h1>iPhone 16 plus</h1>
-                <button>Check out</button>
+                <img class="relative_img" src="<?php echo htmlspecialchars($similar['image_url']); ?>" alt="<?php echo htmlspecialchars($similar['name']); ?>">
+                <h1><?php echo htmlspecialchars($similar['name']); ?></h1>
+                <p>Price: $<?php echo number_format($similar['price'], 2); ?></p>
+                <button onclick="window.location.href='product.php?product_id=<?php echo $similar['product_id']; ?>&user_id=<?php echo $user_id; ?>'">Check out</button>
             </div>
-
-            <div class="relative">
-                <img class="relative_img" src="images/relative.png" alt="">
-                <h1>iPhone 16 plus</h1>
-                <button>Check out</button>
-            </div>
-
-            <div class="relative">
-                <img class="relative_img" src="images/relative.png" alt="">
-                <h1>iPhone 16 plus</h1>
-                <button>Check out</button>
-            </div>
+            <?php endforeach; ?>
         </div>
     </main>
 
@@ -163,33 +206,28 @@ if (!$product) {
     </footer>
 
     <script>
-        document.querySelector('.buy-button').addEventListener('click', function () {
-            const productId = <?php echo $product_id; ?>;
-            const userId = <?php echo $user_id; ?>;
+        const mainImage = document.querySelector('.main-image');
+        const zoomWindow = document.querySelector('.zoom-window');
+        const zoomImage = zoomWindow.querySelector('img');
 
-            fetch('add_to_history.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    product_id: productId,
-                    action: 'wishlist',
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Added to cart');
-                } else {
-                    alert('Failed to add to cart: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An unexpected error occurred.');
-            });
+        mainImage.addEventListener('mousemove', (e) => {
+            const rect = mainImage.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
+
+            zoomImage.style.left = `-${xPercent * 2}%`;
+            zoomImage.style.top = `-${yPercent * 2}%`;
+
+            zoomWindow.style.left = `${e.pageX + 20}px`;
+            zoomWindow.style.top = `${e.pageY + 20}px`;
+            zoomWindow.style.display = 'block';
+        });
+
+        mainImage.addEventListener('mouseleave', () => {
+            zoomWindow.style.display = 'none';
         });
     </script>
 </body>
