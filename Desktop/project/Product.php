@@ -113,7 +113,6 @@ if ($product_id > 0) {
                     <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="Zoomed Image">
                 </div>
                 <div class="thumbnails">
-                    <!-- Static thumbnails for now -->
                     <img src="images/iphone16pro-1.png" alt="Thumbnail 1" class="thumbnail">
                     <img src="images/iphone16pro-2.png" alt="Thumbnail 2" class="thumbnail">
                     <img src="images/iphone16pro-3.png" alt="Thumbnail 3" class="thumbnail">
@@ -213,6 +212,35 @@ if ($product_id > 0) {
 
         mainImage.addEventListener('mouseleave', () => {
             zoomWindow.style.display = 'none';
+        });
+
+        document.querySelector('.buy-button').addEventListener('click', function () {
+            const productId = <?php echo $product_id; ?>;
+            const userId = <?php echo $user_id; ?>;
+
+            fetch('add_to_history.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    product_id: productId,
+                    action: 'wishlist',
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Added to cart');
+                } else {
+                    alert('Failed to add to cart: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An unexpected error occurred.');
+            });
         });
     </script>
 </body>
