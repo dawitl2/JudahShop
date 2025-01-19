@@ -148,21 +148,6 @@ if ($product_id > 0) {
             </div>
         </section>
 
-        <div class="main_div">
-            <h2 style="text-align: center;">More about the product</h2>
-            <?php if (!empty($product['video_url'])): ?>
-            <div class="vid_div">
-                <video class="vid" src="<?php echo htmlspecialchars($product['video_url']); ?>" muted loop autoplay></video>
-            </div>
-            <?php endif; ?>
-            <div class="container_div">
-                <div class="div_1"><img src="images/P_AD_1.png" alt=""></div>
-                <div class="div_2"><img src="images/P_AD_2.png" alt=""></div>
-                <div class="div_3"><img src="images/P_AD_4.png" alt=""></div>
-                <div class="div_4"><img src="images/P_AD_3.png" alt=""></div>
-            </div>
-        </div>
-
         <h2 style="padding-left: 50px; color: gray;">Similar Compilations</h2>
         <div class="relative_div">
             <?php foreach ($similar_products as $similar): ?>

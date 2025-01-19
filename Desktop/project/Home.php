@@ -62,7 +62,8 @@
                 <div class="AD_text">
                     <h1 class="AD_h1">iPHONE 16</h1>
                     <h2 class="AD_h2">Hello, Apple intelligence</h2>
-                    <button class="AD_button">More</button>
+                    <button class="AD_button" onclick="window.location.href='product.php?product_id=1&user_id=<?= htmlspecialchars($user_id) ?>'">More</button>
+
                 </div>
             </div>
         </header>
