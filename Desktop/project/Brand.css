@@ -34,8 +34,18 @@ color: black;
 .logo {
     width: 200px;
     height: auto;
-    margin-right: 20px;
+    margin-right: 50px;
 }
+
+
+.brand_div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; 
+    padding: 40px;
+    padding-top: 70px;
+}
+
 
 .card {
     display: flex;
