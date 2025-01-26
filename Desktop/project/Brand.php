@@ -58,8 +58,8 @@
                 <div class="card">
                     <div class="loader">
                         <p style="color: #919DF1;">Judah Shop</p>
-                        <p><?php echo $description; ?></p>
-                        <p class="brand-tagline">"Discover the best products from <?php echo $brand_name; ?>."</p>
+                        <p style="color:rgba(0, 0, 0, 0.44);"><?php echo $description; ?></p>
+                        <p style="color:rgba(0, 0, 0, 0.44);" class="brand-tagline">Discover products from <?php echo $brand_name; ?>.</p>
                     </div>
                 </div>
                 <div class="help">

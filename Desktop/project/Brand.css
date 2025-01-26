@@ -41,7 +41,7 @@
 }
 
 .help{
-    margin-left: 10vw;
+    margin-left: 5vw;
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -63,9 +63,16 @@
 
 .loader {
     text-align: start;
-    font-size: 18px;
+    font-size: 25px;
     font-weight: bold;
+    width: 50vw;
     color: #333;
+}
+
+.loader p{
+    padding: 0px;
+    margin: 7px;
+    gap: 0px
 }
 .apple-tagline {
     font-size: 16px;
