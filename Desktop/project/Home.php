@@ -44,13 +44,11 @@
         $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
         ?>
         <div class="right-stuff">
-        <div class="search-container" onmouseover="toggleSearchField()" onmouseout="toggleSearchField()">
-                <button class="search-button">Search</button>
-                <div id="search-field" class="search-field">
-                    <input type="text" id="search-input" placeholder="Search products..." oninput="searchProducts()">
-                </div>
+            <button class="search-button" onclick="toggleSearchField()" style="background-image: url('images/search-icon.png'); width: 20px; height: 20px; background-size: cover;"></button>
+            <div id="search-field" class="search-field">
+                <input type="text" id="search-input" placeholder="Search products..." oninput="searchProducts()">
             </div>
-            <a href="Cart.php?user_id=<?= htmlspecialchars($user_id) ?>" class="cart-button">CART</a>
+            <button class="cart-button" onclick="window.location.href='Cart.php?user_id=<?= htmlspecialchars($user_id) ?>'" style="background-image: url('images/cart-icon.png'); width: 20px; height: 20px; background-size: cover;"></button>
         </div>
     </div>
 </header>
@@ -63,7 +61,6 @@
                     <h1 class="AD_h1">iPHONE 16</h1>
                     <h2 class="AD_h2">Hello, Apple intelligence</h2>
                     <button class="AD_button" onclick="window.location.href='product.php?product_id=1&user_id=<?= htmlspecialchars($user_id) ?>'">More</button>
-
                 </div>
             </div>
         </header>
@@ -137,12 +134,13 @@
                             echo "</div>";
                         }
                         $current_brand = $row['brand_name'];
-                        echo "<div class='product_div'>
-                                <h1 class='font'>
-                                    <a class='label-p' href='brand.php?brand_id=" . $row['brand_id'] . "&user_id=$user_id'>" . htmlspecialchars($current_brand) . "</a> 
-                                    <span class='label-g'>Products</span>
-                                </h1>
-                                <div class='row_div'>";
+                        echo "
+                            <h1 class='font'>
+                                <a class='lable-p' href='brand.php?brand_id=" . $row['brand_id'] . "&user_id=$user_id'>" . htmlspecialchars($current_brand) . "</a> 
+                                <span class='lable-g'>Products</span>
+                            </h1>
+                            <div class='row_div'>
+                        ";
                     }
 
                     echo "

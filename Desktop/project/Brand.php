@@ -57,9 +57,14 @@
                 <img class="logo" src="<?php echo $logoUrl; ?>" alt="<?php echo $brand_name; ?> Logo">
                 <div class="card">
                     <div class="loader">
+                        <p style="color: #919DF1;">Judah Shop</p>
                         <p><?php echo $description; ?></p>
                         <p class="brand-tagline">"Discover the best products from <?php echo $brand_name; ?>."</p>
                     </div>
+                </div>
+                <div class="help">
+                        <img src="images/nahome.png" alt="">
+                        <p>You need help <br> shopping?</p>
                 </div>
             </div>
         </header>
