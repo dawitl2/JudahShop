@@ -94,12 +94,7 @@ if ($product_id > 0) {
 <body>
     <header>
         <div class="top_div">
-            <ul class="top_ul">
-                <li><a href="Home.php?user_id=<?php echo $user_id; ?>">Home</a></li>
-                <li><a href="Brand.php?user_id=<?php echo $user_id; ?>">Brands</a></li>
-                <li><a href="#">Coupons</a></li>
-                <li><a href="#">Accessories</a></li>
-            </ul>
+          judah shop
         </div>
     </header>
     <main>
@@ -147,6 +142,7 @@ if ($product_id > 0) {
             </div>
         </section>
 
+        <?php if (!empty($similar_products)): ?>
         <h2 style="padding-left: 50px; color: gray;">Similar Compilations</h2>
         <div class="relative_div">
             <?php foreach ($similar_products as $similar): ?>
@@ -158,6 +154,7 @@ if ($product_id > 0) {
             </div>
             <?php endforeach; ?>
         </div>
+        <?php endif; ?>
     </main>
 
     <footer>

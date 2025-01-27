@@ -5,15 +5,12 @@ html, body {
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 }
 
-.top_div 
-{
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-background-color: transparent;
-padding: 10px 0; 
-color: black;
+.top_div {
+    width: 100%;
+    background-color: transparent;
+    color: white;
+    padding: 15px;
+    background-color: #8692E6;
 }
 
 /*--------------------body---------------------*/
@@ -22,7 +19,6 @@ color: black;
     display: flex;
     align-items: flex-start;
     gap: 20px;
-    margin: 20px
 }
 
 .product-images {
@@ -56,7 +52,6 @@ color: black;
     transition: border-color 0.3s ease;
 }
 
-
 .color-options {
     display: flex;
     gap: 10px;
@@ -86,15 +81,14 @@ color: black;
     background-color: #1e90ff;
 }
 
-
-.product-details{
+.product-details {
     padding-top: 70px;
 }
 
 .product-details header {
     display: flex;
     align-items: center;
-    gap: 20px; /* Adds spacing between the title and the button */
+    gap: 20px;
 }
 
 .product-details header h1 {
@@ -129,16 +123,13 @@ color: black;
     cursor: pointer;
     height: 30px;
     width: 80px;
-
 }
 
 .buy-button:hover {
     background-color: #8692E6;
 }
 
-
 /*--------------------Video/Ad---------------------*/
-
 
 .main_div {
     display: flex;
@@ -147,7 +138,7 @@ color: black;
     margin-top: 100px;
 }
 
-.vid_div{
+.vid_div {
     display: flex;
     flex-direction: row;
     gap: 50px;
@@ -157,46 +148,66 @@ color: black;
     padding-right: 100px;
 }
 
-.text_1{
+.text_1 {
     color: #555;
     margin: 0 auto;
     padding-top: 40px;
 }
-  
 
-.relative_div{
-    background-color: #D3DFFF; 
+.relative_div {
+    background-color: #D3DFFF;
     width: 100%;
     height: 470px;
     display: flex;
     justify-content: center;
-    align-items: center; 
-    gap: 20px; 
-    background-color: #D3DFFF;
-
+    align-items: center;
+    gap: 20px;
 }
 
-.relative{
+.relative {
     margin-left: 20px;
+    width: 250px; /* Fixed width for all similar product cards */
+    height: 400px; /* Fixed height for all similar product cards */
     display: flex;
-    width: 300px;
     align-items: center;
     flex-direction: column;
+    justify-content: space-between; /* Ensures content is evenly spaced */
+    padding: 10px; /* Optional for inner spacing */
+    box-sizing: border-box; /* Ensures padding doesn't affect width/height */
 }
+
 .relative_img {
-    padding-top: 20px;
-   height: 270px;
+    height: 200px; /* Fixed height for images */
+    width: 200px; /* Fixed width for images */
+    object-fit: contain; /* Ensures the image is fully visible */
+    border-radius: 10px; /* Optional for rounded corners */
+    background-color: transparent; /* Add a background color to fill empty space, optional */
+}
+
+.relative h1 {
+    font-size: 1rem; /* Consistent font size */
+    text-align: center;
+    margin: 0px 0; /* Reduce spacing around the title */
+}
+
+.relative p {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0px 0; /* Reduce spacing around the price */
 }
 
 .relative button {
-    font-size: 16px;
+    font-size: 14px;
+    margin: 0px 0; /* Reduce spacing around the button */
     border: 1px solid #000000;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0);
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    padding: 10px 15px; /* Ensures consistent button size */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
+
 
 .relative button:hover {
     background-color: #f0f0f0;
@@ -204,61 +215,40 @@ color: black;
     transform: scale(1.05);
 }
 
-
-body{
+body {
     margin: 0;
 }
-.product_div{
+
+.product_div {
     display: flex;
     justify-content: center;
-    height:500px;
+    height: 500px;
     padding: 30px;
 }
-.data_div{
+
+.data_div {
     max-height: 300px;
     margin-top: 50px;
 }
 
-.relative_div{
-    background-color: #D3DFFF; 
-    width: 100%;
-    height: 470px;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    gap: 20px; 
-    background-color: #D3DFFF;
-
-}
-.relative{
-    margin-left: 20px;
-    display: flex;
-    width: 300px;
-    align-items: center;
-    flex-direction: column;
-}
-.relative_img {
-    padding-top: 20px;
-   height: 270px;
-}
-
-.relative button {
-    font-size: 16px;
-    border: 1px solid #000000;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0);
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.relative button:hover {
-    background-color: #f0f0f0;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    transform: scale(1.05);
-}
-
-
 @media (max-width: 970px) {
+    .product-overview {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
 
+    .product-images {
+        padding: 0;
+    }
+
+    .relative_div {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .relative {
+        width: 100%;
+        max-width: 300px;
+    }
 }
