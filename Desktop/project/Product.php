@@ -94,7 +94,10 @@ if ($product_id > 0) {
 <body>
     <header>
         <div class="top_div">
-          judah shop
+          <p style="margin-left: 10px;">Judah shop</p>
+          <div class="right-stuff">
+            <button class="cart-button" onclick="window.location.href='Cart.php?user_id=<?php echo htmlspecialchars($user_id); ?>'" style="background-image: url('images/cart-icon.png'); width: 20px; height: 20px; background-size: cover;"></button>
+        </div>
         </div>
     </header>
     <main>

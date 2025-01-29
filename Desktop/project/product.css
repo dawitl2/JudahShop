@@ -9,9 +9,13 @@ html, body {
     width: 100%;
     background-color: transparent;
     color: white;
-    padding: 15px;
     background-color: #8692E6;
 }
+
+.search-button, .cart-button {
+    filter: invert(1);
+}
+
 
 /*--------------------body---------------------*/
 

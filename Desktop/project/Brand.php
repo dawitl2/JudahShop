@@ -93,7 +93,7 @@
         </div>
     </header>
     <nav>
-        <ul class="middle-nav-list">
+        <ul class="middle-nav-list" style="color:rgba(0, 0, 0, 0.44)">
             <?php
             $categoriesSql = "SELECT DISTINCT Categories.category_id, Categories.name 
                             FROM Products 

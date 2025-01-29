@@ -7,6 +7,11 @@
     justify-content: center;
 }
 
+.search-button, .cart-button {
+    filter: invert(1);
+}
+
+
 .top_ul li:hover
 {
     cursor: pointer;
@@ -103,7 +108,7 @@
 .middle-nav-list a {
     text-decoration: none;
     font-size: 15px;
-    color: #333;
+    color:rgba(0, 0, 0, 0.66);
     padding: 8px 12px;
 }
 
