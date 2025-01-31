@@ -36,20 +36,30 @@ if (!$product) {
     die("Product not found.");
 }
 
+// Fetch thumbnails from the database
+$thumbnails = [];
+$stmt = $conn->prepare("SELECT image_url FROM Thumbnails WHERE product_id = ?");
+$stmt->bind_param("i", $product_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$thumbnails = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
+// Ensure the original product image is included in thumbnails
+array_unshift($thumbnails, ['image_url' => $product['image_url']]);
+
 // Fetch similar products from the same category
 $similar_products = [];
-if ($product_id > 0) {
-    $stmt = $conn->prepare(
-        "SELECT product_id, name, image_url, price FROM Products 
-         WHERE category_id = ? AND product_id != ? 
-         LIMIT 3"
-    );
-    $stmt->bind_param("ii", $product['category_id'], $product_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $similar_products = $result->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
-}
+$stmt = $conn->prepare(
+    "SELECT product_id, name, image_url, price FROM Products 
+     WHERE category_id = ? AND product_id != ? 
+     LIMIT 3"
+);
+$stmt->bind_param("ii", $product['category_id'], $product_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$similar_products = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -59,37 +69,11 @@ if ($product_id > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($product['name']); ?></title>
     <link rel="stylesheet" href="product.css">
-    <style>
-        .product-images {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+    <script>
+        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
         }
-        .main-image {
-            width: 300px;
-            height: 300px;
-            cursor: zoom-in;
-            object-fit: cover;
-        }
-        .zoom-window {
-            display: none;
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            overflow: hidden;
-            border: 2px solid #ccc;
-            background-color: white;
-            z-index: 10;
-            pointer-events: none;
-        }
-        .zoom-window img {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            object-fit: cover;
-        }
-    </style>
+    </script>
 </head>
 <body>
     <header>
@@ -104,26 +88,19 @@ if ($product_id > 0) {
         <section class="product-overview">
             <div class="product-images">
                 <img 
+                    id="mainImage" 
                     src="<?php echo htmlspecialchars($product['image_url']); ?>" 
                     alt="<?php echo htmlspecialchars($product['name']); ?> Main Image" 
                     class="main-image">
-                <div class="zoom-window">
-                    <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="Zoomed Image">
-                </div>
                 <div class="thumbnails">
-                    <img src="images/iphone16pro-1.png" alt="Thumbnail 1" class="thumbnail">
-                    <img src="images/iphone16pro-2.png" alt="Thumbnail 2" class="thumbnail">
-                    <img src="images/iphone16pro-3.png" alt="Thumbnail 3" class="thumbnail">
-                </div>
-                <p>Available in 4 colors:</p>
-                <div class="color-options">
-                    <span class="color gold"></span>
-                    <span class="color silver"></span>
-                    <span class="color black"></span>
-                    <span class="color blue"></span>
+                    <?php foreach ($thumbnails as $thumb): ?>
+                        <img src="<?php echo htmlspecialchars($thumb['image_url']); ?>" 
+                             alt="Thumbnail" 
+                             class="thumbnail" 
+                             onclick="changeImage('<?php echo htmlspecialchars($thumb['image_url']); ?>')">
+                    <?php endforeach; ?>
                 </div>
             </div>
-
             <div class="product-details">
                 <header>
                     <h1><?php echo htmlspecialchars($product['name']); ?></h1>
@@ -146,7 +123,7 @@ if ($product_id > 0) {
         </section>
 
         <?php if (!empty($similar_products)): ?>
-        <h2 style="padding-left: 50px; color: gray;">Similar Compilations</h2>
+        <h2 style="padding-left: 50px; color: gray; margin-top: 50px">Similar Products</h2>
         <div class="relative_div">
             <?php foreach ($similar_products as $similar): ?>
             <div class="relative">
@@ -159,7 +136,6 @@ if ($product_id > 0) {
         </div>
         <?php endif; ?>
     </main>
-
     <footer>
         <div class="foot_div">
             <div class="footer-content">
@@ -188,32 +164,8 @@ if ($product_id > 0) {
             </div>
         </div>
     </footer>
-
     <script>
-        const mainImage = document.querySelector('.main-image');
-        const zoomWindow = document.querySelector('.zoom-window');
-        const zoomImage = zoomWindow.querySelector('img');
-
-        mainImage.addEventListener('mousemove', (e) => {
-            const rect = mainImage.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const xPercent = (x / rect.width) * 100;
-            const yPercent = (y / rect.height) * 100;
-
-            zoomImage.style.left = `-${xPercent * 2}%`;
-            zoomImage.style.top = `-${yPercent * 2}%`;
-
-            zoomWindow.style.left = `${e.pageX + 20}px`;
-            zoomWindow.style.top = `${e.pageY + 20}px`;
-            zoomWindow.style.display = 'block';
-        });
-
-        mainImage.addEventListener('mouseleave', () => {
-            zoomWindow.style.display = 'none';
-        });
-
+        // buy
         document.querySelector('.buy-button').addEventListener('click', function () {
             const productId = <?php echo $product_id; ?>;
             const userId = <?php echo $user_id; ?>;

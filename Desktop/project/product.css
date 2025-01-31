@@ -7,86 +7,57 @@ html, body {
 
 .top_div {
     width: 100%;
-    background-color: transparent;
-    color: white;
     background-color: #8692E6;
+    color: white;
 }
 
 .search-button, .cart-button {
     filter: invert(1);
 }
 
-
-/*--------------------body---------------------*/
-
+/* Product Overview */
 .product-overview {
     display: flex;
     align-items: flex-start;
-    gap: 20px;
+    gap: 40px; /* Adjusted for better spacing */
 }
 
 .product-images {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
     padding-top: 50px;
-    padding-left: 250px;
+    padding-left: 150px;
 }
 
 .product-images .main-image {
-    width: 350px;
-    height: auto;
+    width: 400px;
+    height: 400px;
     border-radius: 10px;
-    object-fit: cover;
+    object-fit: contain;
+    background-color: transparent;
 }
 
 .product-images .thumbnails {
     display: flex;
-    gap: 10px;
+    gap: 15px;
 }
 
 .product-images .thumbnail {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
     border: 2px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
     transition: border-color 0.3s ease;
 }
 
-.color-options {
-    display: flex;
-    gap: 10px;
-}
-
-.color-options .color {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    cursor: pointer;
-}
-
-.color.gold {
-    background-color: #d4af37;
-}
-
-.color.silver {
-    background-color: #c0c0c0;
-}
-
-.color.black {
-    background-color: #000000;
-}
-
-.color.blue {
-    background-color: #1e90ff;
-}
-
+/* Product Details */
 .product-details {
     padding-top: 70px;
+    flex: 1;
 }
 
 .product-details header {
@@ -96,24 +67,26 @@ html, body {
 }
 
 .product-details header h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
     margin: 0;
+    color: #333;
 }
 
 .price {
-    font-size: 0.8rem;
-    color: #333;
-    margin: 10px 0;
+    font-size: 1.2rem;
+    color: #555;
+    margin: 15px 0;
+    font-weight: bold;
 }
 
 .product-details ul {
     list-style: none;
     padding: 0;
-    margin: 15px 0;
+    margin: 20px 0;
 }
 
 .product-details ul li {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-bottom: 10px;
     color: #555;
 }
@@ -125,116 +98,78 @@ html, body {
     font-size: 1rem;
     border-radius: 5px;
     cursor: pointer;
-    height: 30px;
-    width: 80px;
+    height: 40px;
+    width: 100px;
+    transition: background-color 0.3s;
 }
 
 .buy-button:hover {
-    background-color: #8692E6;
+    background-color: #7682D6;
 }
 
-/*--------------------Video/Ad---------------------*/
-
-.main_div {
-    display: flex;
-    flex-direction: column;
-    height: 1150px;
-    margin-top: 100px;
-}
-
-.vid_div {
-    display: flex;
-    flex-direction: row;
-    gap: 50px;
-    padding-left: 100px;
-    overflow-y: scroll;
-    scrollbar-width: none;
-    padding-right: 100px;
-}
-
-.text_1 {
-    color: #555;
-    margin: 0 auto;
-    padding-top: 40px;
-}
-
+/* Similar Products Section */
 .relative_div {
     background-color: #D3DFFF;
     width: 100%;
-    height: 470px;
+    padding: 20px 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
-    gap: 20px;
 }
 
 .relative {
-    margin-left: 20px;
-    width: 250px; /* Fixed width for all similar product cards */
-    height: 400px; /* Fixed height for all similar product cards */
+    width: 300px;
+    height: auto;
     display: flex;
-    align-items: center;
     flex-direction: column;
-    justify-content: space-between; /* Ensures content is evenly spaced */
-    padding: 10px; /* Optional for inner spacing */
-    box-sizing: border-box; /* Ensures padding doesn't affect width/height */
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: transparent;
 }
 
 .relative_img {
-    height: 200px; /* Fixed height for images */
-    width: 200px; /* Fixed width for images */
-    object-fit: contain; /* Ensures the image is fully visible */
-    border-radius: 10px; /* Optional for rounded corners */
-    background-color: transparent; /* Add a background color to fill empty space, optional */
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+    border-radius: 10px;
+    background-color: transparent;
 }
 
 .relative h1 {
-    font-size: 1rem; /* Consistent font size */
+    font-size: 1.2rem;
     text-align: center;
-    margin: 0px 0; /* Reduce spacing around the title */
+    margin: 0;
+    color: #333;
 }
 
 .relative p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #555;
-    margin: 0px 0; /* Reduce spacing around the price */
+    margin: 0;
 }
 
 .relative button {
-    font-size: 14px;
-    margin: 0px 0; /* Reduce spacing around the button */
-    border: 1px solid #000000;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0);
+    font-size: 1rem;
+    border: 1px solid black;
+    border-radius: 13px;
+    background-color: transparent;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    padding: 10px 15px; /* Ensures consistent button size */
+    padding: 10px 20px;
+    color: black;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-
 .relative button:hover {
-    background-color: #f0f0f0;
+    background-color: #8692E6;
+    color: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     transform: scale(1.05);
 }
 
-body {
-    margin: 0;
-}
-
-.product_div {
-    display: flex;
-    justify-content: center;
-    height: 500px;
-    padding: 30px;
-}
-
-.data_div {
-    max-height: 300px;
-    margin-top: 50px;
-}
-
+/* Responsive Design */
 @media (max-width: 970px) {
     .product-overview {
         flex-direction: column;
@@ -248,11 +183,16 @@ body {
 
     .relative_div {
         flex-direction: column;
-        gap: 10px;
+        gap: 20px;
     }
 
     .relative {
         width: 100%;
         max-width: 300px;
+    }
+
+    .product-images .main-image {
+        width: 300px;
+        height: 300px;
     }
 }

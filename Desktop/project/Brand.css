@@ -1,6 +1,6 @@
 @import url(main.css);
-.header_div
-{
+
+.header_div {
     list-style-type: none;
     display: flex;
     gap: 20px;
@@ -11,13 +11,11 @@
     filter: invert(1);
 }
 
-
-.top_ul li:hover
-{
+.top_ul li:hover {
     cursor: pointer;
 }
-.top_div 
-{
+
+.top_div {
     background-color: #919DF1;
     color: white;
 }
@@ -45,7 +43,7 @@
     gap: 10px; 
 }
 
-.help{
+.help {
     margin-left: 5vw;
     display: flex;
     flex-direction: row;
@@ -54,7 +52,7 @@
     color: #919DF1;
 }
 
-.help img{
+.help img {
     width: 50px;
     height: 50px;
 }
@@ -74,11 +72,12 @@
     color: #333;
 }
 
-.loader p{
+.loader p {
     padding: 0px;
     margin: 7px;
-    gap: 0px
+    gap: 0px;
 }
+
 .apple-tagline {
     font-size: 16px;
     font-style: italic;
@@ -86,7 +85,6 @@
     margin-top: 10px;
     text-align: center;
 }
-
 
 /* Navigation Bar */
 .middle-nav {
@@ -108,16 +106,16 @@
 .middle-nav-list a {
     text-decoration: none;
     font-size: 15px;
-    color:rgba(0, 0, 0, 0.66);
+    color: rgba(0, 0, 0, 0.66);
     padding: 8px 12px;
 }
 
-.label{
+.label {
     padding-left: 20px;
     color: #919DF1;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 990px) {
     .apple_div {
         display: flex;
         flex-direction: column;
@@ -126,7 +124,30 @@
         padding: 40px;
         margin-top: 30px;
     }
-    .middle-nav-list{
+
+    .brand_div {
+        flex-direction: column;
+        align-items: flex-start; /* Ensure the alignment is to the left */
+    }
+
+    .brand_div p {
+        width: 190%; /* Reduce shrinkage in width */
+        max-width: 600px; /* Set a reasonable max width */
+        margin-left: 0;
+        padding-left: 0;
+        font-size: 18px; /* Adjust font size slightly smaller */
+        text-align: left;
+    }
+
+    .logo {
+        align-self: center; /* Ensure the image stays centered */
+    }
+
+    .middle-nav-list {
+        display: none;
+    }
+
+    .help {
         display: none;
     }
 }
