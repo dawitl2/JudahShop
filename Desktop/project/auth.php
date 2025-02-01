@@ -12,7 +12,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-session_start();//start
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['login'])) {
@@ -69,67 +69,120 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: linear-gradient(145deg, #dfe9f3, #ffffff);
+            background: #ffffff;
         }
         .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 30px rgba(108, 99, 255, 0.5);
             width: 300px;
+            text-align: start;
         }
         .container h2 {
-            text-align: center;
-            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #8591E6;
+        }
+        .container h2 span {
+            color: #757575;
         }
         .container form {
             display: flex;
             flex-direction: column;
         }
         .container form input {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .container form input:focus {
+            outline: none;
+            border-color: #8591E6;
+            box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
+        }
+        .container form a {
+            text-decoration: none;
+            font-size: 0.9rem;
+            color: #8591E6;
+            margin-bottom: 15px;
+        }
+        .container form a:hover {
+            text-decoration: underline;
         }
         .container form button {
-            background: #6c63ff;
-            color: white;
+            background: #8591E6;
+            color: #fff;
             border: none;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
             cursor: pointer;
+            font-weight: bold;
         }
         .container form button:hover {
-            background: #5855d6;
+            background: #6c63ff;
         }
         .toggle-link {
-            text-align: center;
-            margin-top: 10px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            justify-content: center;
         }
-        .error {
-            color: red;
-            text-align: center;
+        .toggle-link a {
+            text-decoration: none;
+            color: #8591E6;
         }
-        .success {
-            color: green;
-            text-align: center;
+        .toggle-link a:hover {
+            text-decoration: underline;
         }
+        
+        @media (max-width: 411px) {
+    body {
+        background-color: red;
+    }
+    .container {
+        width: 60%;
+        padding: 30px;
+        transform: scale(0.9);
+    }
+    .container h2 {
+        font-size: 1.5rem;
+    }
+    .container form input {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+    .container form button {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+    .toggle-link {
+        font-size: 0.8rem;
+    }
+}
+
     </style>
 </head>
 <body>
     <div class="container">
         <?php if (isset($error)): ?>
-            <p class="error"><?= $error ?></p>
+            <p class="error" style="color:red; text-align:center;"> <?= $error ?> </p>
         <?php endif; ?>
         <?php if (isset($success)): ?>
-            <p class="success"><?= $success ?></p>
+            <p class="success" style="color:green; text-align:center;"> <?= $success ?> </p>
         <?php endif; ?>
         <?php if (!isset($_GET['action']) || $_GET['action'] == 'login'): ?>
-            <h2>Welcome Back!</h2>
+            <h2>Welcome <span>Back!</span></h2>
             <form method="POST">
                 <input type="text" name="username" placeholder="Username" required>
                 <input type="password" name="password" placeholder="Password" required>
+                <a href="#">Forgot password?</a>
                 <button type="submit" name="login">Log In</button>
             </form>
             <div class="toggle-link">
