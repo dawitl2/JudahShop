@@ -93,7 +93,7 @@
                     <div class="brand_select">
                         <p style="font-size:18px">Brand</p>
                         <?php
-                            $conn = new mysqli('127.0.0.1', 'root', 'ushallpass44', 'test_shop');
+                            $conn = new mysqli('127.0.0.1', 'root', 'password', 'test_shop');
                             
                             if ($conn->connect_error) {
                                 die("Connection failed: " . $conn->connect_error);
@@ -162,7 +162,7 @@
             <?php
             $servername = '127.0.0.1';
             $username = 'root';
-            $password = 'ushallpass44';
+            $password = 'password';
             $database = 'test_shop';
             $conn = new mysqli($servername, $username, $password, $database);
 
