@@ -29,6 +29,33 @@
             const searchField = document.getElementById('search-field');
             searchField.classList.toggle('show');
         }
+
+        function applyFilters() {
+            const minPrice = parseFloat(document.getElementById("min").value) || 0;
+            const maxPrice = parseFloat(document.getElementById("max").value) || Infinity;
+            const selectedBrand = document.querySelector("input[name='brand']:checked");
+            const brand = selectedBrand ? selectedBrand.value.toLowerCase() : "";
+
+            const productItems = document.querySelectorAll(".product-item");
+
+            productItems.forEach(item => {
+                const productName = item.querySelector(".product-name").textContent.toLowerCase();
+                const productPrice = parseFloat(item.querySelector(".product-price").textContent.replace(/[^0-9.]/g, ""));
+                const productBrand = item.getAttribute("data-brand").toLowerCase();
+
+                let matchesBrand = brand === "" || productBrand === brand;
+                let matchesPrice = productPrice >= minPrice && productPrice <= maxPrice;
+
+                if (matchesBrand && matchesPrice) {
+                    item.style.display = "block"; // Show matching products
+                } 
+                else {
+                    item.style.display = "none"; // Hide non-matching products
+                }
+            });
+        }
+    
+        
     </script>
 </head>
 <body>
@@ -43,6 +70,54 @@
         <?php
         $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
         ?>
+
+        <div class="filter-container">  
+            <button class="filter-button" style="background-image: url('images/filter.png'); width: 20px; height: 20px; background-size: cover; background-color: transparent;border: none;margin: 10px;"></button>
+        </div>
+            <div class="filterDropdown">
+                <div class="filter_style">
+                    <p style="font-size:18px">Price (ETB)</p>
+                    <div class="range_div">
+                        <div class="range_input">
+                            <label for="min-1000002"> min </label>
+                            <input type="text" id="min">
+                        </div>
+                        <div style="margin-left:10px ;margin-right:10px;">
+                            <p>---</p>
+                        </div>
+                        <div class="range_input">
+                            <label for="max-1000002"> max </label>
+                            <input type="text" id="max" >
+                        </div>
+                    </div>
+                    <div class="brand_select">
+                        <p style="font-size:18px">Brand</p>
+                        <?php
+                            $conn = new mysqli('127.0.0.1', 'root', 'ushallpass44', 'test_shop');
+                            
+                            if ($conn->connect_error) {
+                                die("Connection failed: " . $conn->connect_error);
+                            }
+
+                            $brandQuery = "SELECT name FROM Brands";
+                            $brandResult = $conn->query($brandQuery);
+
+                            if ($brandResult->num_rows > 0) {
+                                while ($brand = $brandResult->fetch_assoc()) {
+                                    $brandName = htmlspecialchars($brand['name']);
+                                    echo "<label><input type='radio' name='brand' value='$brandName'> $brandName</label>";
+                                }
+                            } else {
+                                echo "<p>No brands available</p>";
+                            }
+
+                            $conn->close();
+                        ?>
+                    </div>
+                    <button id="apply_filter_button" onclick="applyFilters()">Apply Filters</button>
+                </div>
+            </div>
+        
         <div class="right-stuff">
             <button class="search-button" onclick="toggleSearchField()" style="background-image: url('images/search-icon.png'); width: 20px; height: 20px; background-size: cover;"></button>
             <div id="search-field" class="search-field">
@@ -50,6 +125,7 @@
             </div>
             <button class="cart-button" onclick="window.location.href='Cart.php?user_id=<?= htmlspecialchars($user_id) ?>'" style="background-image: url('images/cart-icon.png'); width: 20px; height: 20px; background-size: cover;"></button>
         </div>
+    
     </div>
 </header>
 <main>
@@ -84,15 +160,14 @@
         <!-- Products and Goods -->
         <section class="product-listings">
             <?php
-            $servername = 'localhost';
+            $servername = '127.0.0.1';
             $username = 'root';
-            $password = 'password';
+            $password = 'ushallpass44';
             $database = 'test_shop';
-
             $conn = new mysqli($servername, $username, $password, $database);
 
             if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
+                die("Connection failed: ". $conn->connect_error);
             }
 
             $selectedCategory = isset($_GET['category']) ? strtolower($_GET['category']) : '';
@@ -144,7 +219,7 @@
                     }
 
                     echo "
-                        <div class='product-item' onclick=\"window.location.href='product.php?product_id=" . $row['product_id'] . "&user_id=$user_id'\">
+                        <div class='product-item' data-brand='" . strtolower(htmlspecialchars($row['brand_name'])) . "'>
                             <p class='product-name'>" . htmlspecialchars($row['product_name']) . "</p>
                             <img class='a_img' src='" . htmlspecialchars($row['image_url']) . "' alt='" . htmlspecialchars($row['product_name']) . "'>
                             <div class='product_btn'>
@@ -152,6 +227,7 @@
                                 <button class='buy-btn'>Buy</button>
                             </div>
                         </div>";
+
                 }
                 echo "</div>";
             } else {
