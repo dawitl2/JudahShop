@@ -29,12 +29,8 @@
 <body>
 <header>
     <div class="top_div">
-        <ul class="top_ul">
-            <li>Home</li>
-            <li>Brands</li>
-            <li>Coupons</li>
-            <li>Accessories</li>
-        </ul>
+        <div class="top_content">
+        <p class="logo">Judah Shop</p>
         <?php
         $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
         ?>
@@ -44,6 +40,7 @@
                 <input type="text" id="search-input" placeholder="Search products..." oninput="searchProducts()">
             </div>
             <button class="cart-button" onclick="window.location.href='Cart.php?user_id=<?php echo htmlspecialchars($user_id); ?>'" style="background-image: url('images/cart-icon.png'); width: 20px; height: 20px; background-size: cover;"></button>
+        </div>
         </div>
     </div>
 </header>
@@ -93,7 +90,9 @@
         </div>
     </header>
     <nav>
-        <ul class="middle-nav-list" style="color:rgba(0, 0, 0, 0.44)">
+        <ul class="middle-nav-list">
+            <!-- Add the "ALL" option -->
+            <li><a href="?brand_id=<?php echo $brand_id; ?>">ALL</a></li>
             <?php
             $categoriesSql = "SELECT DISTINCT Categories.category_id, Categories.name 
                             FROM Products 

@@ -143,9 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         @media (max-width: 411px) {
-    body {
-        background-color: red;
-    }
     .container {
         width: 60%;
         padding: 30px;

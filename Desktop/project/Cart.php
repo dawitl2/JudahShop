@@ -22,24 +22,42 @@ if ($user_id === 0) {
 // Handle deletion request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
-    if (isset($input['product_id'])) {
+    if (isset($input['product_id'], $input['action'])) {
         $product_id = (int)$input['product_id'];
+        $action = $input['action'];
 
-        $delete_stmt = $conn->prepare("DELETE FROM History WHERE user_id = ? AND product_id = ? AND action = 'wishlist'");
-        $delete_stmt->bind_param("ii", $user_id, $product_id);
-        $delete_stmt->execute();
-        $delete_stmt->close();
+        if ($action === 'remove') {
+            // Remove the product from the wishlist
+            $delete_stmt = $conn->prepare("DELETE FROM History WHERE user_id = ? AND product_id = ? AND action = 'wishlist' LIMIT 1");
+            $delete_stmt->bind_param("ii", $user_id, $product_id);
+            $delete_stmt->execute();
+            $delete_stmt->close();
+        } elseif ($action === 'increase') {
+            // Add another instance of the same item to the wishlist
+            $insert_stmt = $conn->prepare("INSERT INTO History (user_id, product_id, action) VALUES (?, ?, 'wishlist')");
+            $insert_stmt->bind_param("ii", $user_id, $product_id);
+            $insert_stmt->execute();
+            $insert_stmt->close();
+        } elseif ($action === 'decrease') {
+            // Remove one instance of the item from the wishlist
+            $delete_stmt = $conn->prepare("DELETE FROM History WHERE user_id = ? AND product_id = ? AND action = 'wishlist' LIMIT 1");
+            $delete_stmt->bind_param("ii", $user_id, $product_id);
+            $delete_stmt->execute();
+            $delete_stmt->close();
+        }
 
-        echo json_encode(["success" => true, "product_id" => $product_id]);
+        echo json_encode(["success" => true, "product_id" => $product_id, "action" => $action]);
         exit;
     }
 }
 
-// Fetch wishlist items from History table
-$stmt = $conn->prepare("SELECT p.product_id, p.name AS product_name, p.image_url, p.price, b.name AS brand_name FROM History h 
+// Fetch wishlist items from History table and group by product
+$stmt = $conn->prepare("SELECT p.product_id, p.name AS product_name, p.image_url, p.price, b.name AS brand_name, COUNT(*) AS quantity 
+    FROM History h 
     JOIN Products p ON h.product_id = p.product_id 
     JOIN Brands b ON p.brand_id = b.brand_id 
-    WHERE h.user_id = ? AND h.action = 'wishlist'");
+    WHERE h.user_id = ? AND h.action = 'wishlist' 
+    GROUP BY h.product_id");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -64,7 +82,7 @@ $conn->close();
             color: #333;
         }
         header {
-            background-color: #716aca;
+            background-color: #919DF1;
             color: #fff;
             padding: 10px 20px;
             display: flex;
@@ -104,7 +122,6 @@ $conn->close();
             background-color: #f9eaea;
         }
         .remove-btn {
-            display: none;
             background-color: #f44336;
             color: #fff;
             border: none;
@@ -112,8 +129,16 @@ $conn->close();
             padding: 5px 10px;
             cursor: pointer;
         }
-        tr:hover .remove-btn {
-            display: inline-block;
+        .quantity-btn {
+            background-color: #919DF1;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .quantity-btn:hover, .remove-btn:hover {
+            opacity: 0.8;
         }
         .total {
             font-weight: bold;
@@ -123,49 +148,48 @@ $conn->close();
             display: block;
             text-align: center;
             padding: 10px 20px;
-            background-color: #716aca;
+            background-color: #919DF1;
             color: #fff;
             text-decoration: none;
             border-radius: 4px;
             margin-top: 20px;
         }
         .checkout:hover {
-            background-color: #594aad;
+            background-color: #919DF1;
         }
         footer {
             text-align: center;
             padding: 10px;
-            background-color: #716aca;
+            background-color: #919DF1;
             color: #fff;
             margin-top: 20px;
         }
     </style>
     <script>
-        function removeProduct(productId) {
+        function updateQuantity(productId, action) {
             fetch(window.location.href, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ product_id: productId })
+                body: JSON.stringify({ product_id: productId, action: action })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const row = document.querySelector(`tr[data-product-id='${data.product_id}']`);
-                    row.remove();
+                    location.reload(); // Refresh the page to reflect changes
+                }
+            });
+        }
 
-                    // Update totals
-                    let subtotal = 0;
-                    document.querySelectorAll('tr[data-product-id]').forEach(row => {
-                        const price = parseFloat(row.querySelector('.product-price').textContent.replace('$', ''));
-                        subtotal += price;
-                    });
-
-                    const tax = subtotal * 0.15;
-                    const grandTotal = subtotal + tax;
-
-                    document.querySelector('.subtotal').textContent = `Sub Total: $${subtotal.toFixed(2)}`;
-                    document.querySelector('.tax').textContent = `Total Tax: $${tax.toFixed(2)}`;
-                    document.querySelector('.grand-total').textContent = `Grand Total: $${grandTotal.toFixed(2)}`;
+        function removeProduct(productId) {
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product_id: productId, action: 'remove' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Refresh the page to reflect changes
                 }
             });
         }
@@ -182,6 +206,7 @@ $conn->close();
                 <tr>
                     <th>Items</th>
                     <th>Price</th>
+                    <th>Quantity</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -189,7 +214,8 @@ $conn->close();
                 <?php 
                 $subtotal = 0;
                 foreach ($wishlist_items as $item): 
-                    $subtotal += $item['price'];
+                    $total_price = $item['price'] * $item['quantity'];
+                    $subtotal += $total_price;
                 ?>
                 <tr data-product-id="<?php echo $item['product_id']; ?>">
                     <td>
@@ -202,7 +228,12 @@ $conn->close();
                         </div>
                     </td>
                     <td class="product-price">$<?php echo number_format($item['price'], 2); ?></td>
-                    <td><button class="remove-btn" onclick="removeProduct(<?php echo $item['product_id']; ?>)">X</button></td>
+                    <td class="product-count quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(<?php echo $item['product_id']; ?>, 'decrease')">-</button>
+                        <span><?php echo $item['quantity']; ?></span>
+                        <button class="quantity-btn" onclick="updateQuantity(<?php echo $item['product_id']; ?>, 'increase')">+</button>
+                    </td>
+                    <td><button class="remove-btn" onclick="removeProduct(<?php echo $item['product_id']; ?>)">Remove</button></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

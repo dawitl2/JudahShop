@@ -17,6 +17,7 @@ html, body {
 
 /* Product Overview */
 .product-overview {
+    margin-top: 5vh;
     display: flex;
     align-items: flex-start;
     gap: 40px; /* Adjusted for better spacing */
