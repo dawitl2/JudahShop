@@ -8,7 +8,7 @@ $database = "test_shop";
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);
 
-// Check connection
+// Check connection m
 if ($conn->connect_error) {
     die(json_encode(['error' => 'Connection failed: ' . $conn->connect_error]));
 }

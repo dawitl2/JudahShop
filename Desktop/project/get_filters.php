@@ -8,7 +8,7 @@ $database = "test_shop";
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);
 
-// Check if connection is successful
+// Check if connection is successful m
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }

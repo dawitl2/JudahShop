@@ -6,7 +6,7 @@
     <title>Judah Shop</title>
     <link rel="stylesheet" href="main.css">
     <script>
-        // Filter products by category
+        // Filter products by category m
         function filterProducts(category) {
             const userId = new URLSearchParams(window.location.search).get('user_id');
             window.location.href = `?category=${category}&user_id=${userId}`;
