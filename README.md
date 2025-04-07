@@ -1,5 +1,4 @@
 # **Judah Shop**  
-*Your Tech E-Commerce Experience*
 
 ![Judah Shop Screenshot](Screenshot.png)
 
